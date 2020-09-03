@@ -29,6 +29,7 @@
     "binary-parser": "^1.6.2",
     "gunzip-maybe": "^1.4.2",
     "nnng": "^1.0.0",
+    "p-map": "^4.0.0",
     "rm-rf-async": "^1.2.0"
   },
   "devDependencies": {
