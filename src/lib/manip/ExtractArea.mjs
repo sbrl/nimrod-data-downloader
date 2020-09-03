@@ -2,19 +2,24 @@
 
 import a from '../../../helpers/Ansi.mjs';
 import l from '../../../helpers/Log.mjs';
-import { latlng2os, os2arr } from '../../../helpers/CoordinateHelpers.mjs';
+import { latlng2os, os2arr } from '../../helpers/CoordinateHelpers.mjs';
 
 /**
  * Extracts a subsection of the given file.
  * The extraction is done in OS mational grid references with northing + 
  * easting, because the data itself is only rectangluar when presented as such.
- * @param  {Object} settings The settings object.
+ * @param  {Object} bounds The bounds object.
  * @param  {NimrodFile} file     The file to extract from. See NimrodParser.
  */
-export default async function(settings, file) {
+export default async function(bounds_extract, file) {
+	/* bounds_extract format *
+	{
+		top_left: { latitude: float, longitude: float },
+		bottom_right: { latitude: float, longitude: float }
+	}
+	 */
 	// 1: Get bounds
 	let bounds_full = file.header.locations_northing_easting;
-	let bounds_extract = settings.metoffice.bounds;
 	
 	// This works because if 1 is set, then the others will be too  as we check 
 	// these in cli.mjs when we parse the --bounds argument parameter.

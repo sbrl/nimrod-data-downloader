@@ -2,10 +2,13 @@
 
 import fs from 'fs';
 
-import { eat_stream_gunzip_maybe } from '../../helpers/EatStream.mjs';
 import NimrodParser from '../parser/NimrodParser.mjs';
+import extract_area from '../manip/ExtractArea.mjs';
+
+import { eat_stream_gunzip_maybe } from '../../helpers/EatStream.mjs';
 import { write_safe } from '../../helpers/StreamHelpers.mjs';
 import { ErrorWrapper } from '../Errors.mjs';
+
 
 class DatFileParser {
 	constructor() {
@@ -18,10 +21,12 @@ class DatFileParser {
 	 * @param	{string}	filepath	The path to the file to parse.
 	 * @param	{Stream}	stream_out	The target stream to write the result to.
 	 */
-	async parse_file(filepath, stream_out) {
+	async parse_file(filepath, stream_out, bounds) {
+		// 1: Read in the file
 		let buffer = await this.read_all_data(filepath),
 			obj = null;
 		
+		// 2: Parse the file
 		try {
 			obj = this.parser.parse(buffer);
 		} catch(error) {
@@ -29,6 +34,15 @@ class DatFileParser {
 		}
 		if(obj == null)
 			throw new Error(`Error: Binary file parser returned null`);
+		
+		// 3: Area extraction
+		try {
+			obj = extract_area(bounds, obj);
+		} catch(error) {
+			throw new ErrorWrapper(`Error: Failed to extract an area from the parsed file object`, error);
+		}
+		
+		// 4: Write to the output stream
 		await write_json(obj, stream_out);
 	}
 	
