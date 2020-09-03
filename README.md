@@ -7,10 +7,12 @@ This package downloads 1km NIMROD rainfall radar data, extracting the data withi
 I implemented this as part of my PhD.
 
 ## System Requirements
+ - Operating System: Linux is recommended (e.g. Ubuntu), Windows may work but is untested.
  - _Lots_ of disk space (extra space is needed to work in while downloading the data; heavy IO is performed too, so a fast disk will yield benefits)
  - As many CPU cores as you can manage (the process is really rather CPU intensive)
  - [Node.js](https://nodejs.org/)
  - Windows users will need [Git Bash](https://git-scm.com/downloads) installed to run the post-downloader script
+ - The following CLI commands: `tar`, `gzip` (Windows users: these should come with Git Bash - it's recommended to use this program through Git Bash)
 
 
 ## Installation
