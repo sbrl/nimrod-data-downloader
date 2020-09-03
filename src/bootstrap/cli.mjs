@@ -54,6 +54,17 @@ async function get_actions_metadata() {
 
 export default async function() {
 	let cli = new CliParser(path.resolve(__dirname, "../../package.json"));
+	cli.argument("verbose", "Enable verbose mode.", false, "boolean");
+	
+	
+	cli.argument("bounds-topleft",
+		"(download, extra-area) The top-left corner of the bounding box to extract in the form 'latitude,longitude'",
+		null, (value) => value.split(",").map(parseFloat)
+	);
+	cli.argument("bounds-bottomright",
+		"(download, extra-area) The bottom-right corner of the bounding box to extract in the form 'latitude,longitude'",
+		null, (value) => value.split(",").map(parseFloat)
+	);
 	
 	// Disable ansi escape codes if requested
 	if(!settings.output.ansi_colour) {
@@ -100,6 +111,13 @@ export default async function() {
 	}
 	catch(error) {
 		console.error(`\n\n`);
+		if(settings.cli.verbose) {
+			console.error(`${a.fred}${a.hicol}${error}${a.reset}`);
+		}
+		else {
+			console.error(`${a.fred}${a.hicol}${error.message}${a.reset}`);
+		}
+		process.exit(1);
 		throw error;
 	}
 	

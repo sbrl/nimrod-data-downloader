@@ -1,0 +1,6 @@
+description = "Express the bounds of the given file in GeoJSON."
+
+[[arguments]]
+name = "input"
+description = "The path to the input file to parse"
+type = "string"

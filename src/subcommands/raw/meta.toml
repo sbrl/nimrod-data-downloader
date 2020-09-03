@@ -1,0 +1,6 @@
+description = "[advanced] Parses a file and displays the raw output of the parser"
+
+[[arguments]]
+name = "input"
+description = "The path to the input file to parse"
+type = "string"

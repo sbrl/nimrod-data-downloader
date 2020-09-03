@@ -1,0 +1,6 @@
+description = "[advanced] Extracts a given area from the specified file, and displays the result."
+
+[[arguments]]
+name = "input"
+description = "The path to the input file to parse"
+type = "string"
