@@ -1,0 +1,25 @@
+{
+  "name": "nimrod-data-downloader",
+  "version": "1.0.0",
+  "description": "Data downloader for the 1km NIMROD rainfall radar data.",
+  "main": "src/index.mjs",
+  "scripts": {
+    "test": "echo \"No tests have been implemented yet\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sbrl/nimrod-data-downloader.git"
+  },
+  "keywords": [
+    "nimrod",
+    "rainfall",
+    "radar",
+    "downloader"
+  ],
+  "author": "Starbeamrainbowlabs",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/sbrl/nimrod-data-downloader/issues"
+  },
+  "homepage": "https://github.com/sbrl/nimrod-data-downloader#readme"
+}
