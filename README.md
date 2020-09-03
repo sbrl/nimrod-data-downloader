@@ -4,6 +4,7 @@
 
 This package downloads 1km NIMROD rainfall radar data, extracting the data within the given bounding box. It does so in a parallel fashion - it can take advantage of as many cores as your machine has.
 
+I implemented this as part of my PhD.
 
 ## System Requirements
  - _Lots_ of disk space (extra space is needed to work in while downloading the data; heavy IO is performed too, so a fast disk will yield benefits)
