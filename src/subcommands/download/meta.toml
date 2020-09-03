@@ -12,6 +12,12 @@ type = "string"
 default_value = "ftp://ftp.ceda.ac.uk:21/badc/ukmo-nimrod/data/composite/uk-1km"
 
 [[arguments]]
+name = "download-parallel"
+description = "The maximum number of files to download at once"
+type = "integer"
+default_value = 3
+
+[[arguments]]
 name = "retries"
 description = "The number of retries when something goes wrong"
 type = "integer"
