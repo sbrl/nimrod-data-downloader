@@ -1,5 +1,6 @@
 "use strict";
 
+import url from url;
 import { promisify } from 'util';
 
 import FtpClient from '@icetee/ftp';
@@ -33,7 +34,18 @@ class AsyncFtpClient extends FtpClient {
 		this.setLastModAsync = promisify(this.setLastMod);
 	}
 	
-	async connectAsync(obj) {
+	async connectAsyncSimple(ftp_url, user, password) {
+		let url_parsed = url.parse(ftp_url);
+		await this.client.connectAsync({
+			host: url_parsed.hostname,
+			port: parseInt(url_parsed.port, 10),
+			
+			user,
+			password
+		});
+	}
+	
+	connectAsync(obj) {
 		return new Promise((resolve, reject) => {
 			this.once("error", reject);
 

@@ -17,6 +17,7 @@ class TarFileParser {
 	/**
 	 * Parses the tar file at the given target and writes the result to a given filepath.
 	 * Writes as an *ordered* json object stream.
+	 * Deletes both the tar file and the temporary directory when done.
 	 * @param	{string}	filepath	The path to the file to parse.
 	 * @param	{string}	target		The path to the destination file to write to.
 	 * @param	{string}	tmpdir		Path to an *empty* directory *that exists* to use as a temporary working area.
@@ -54,7 +55,10 @@ class TarFileParser {
 		await end_safe(stream_out); // close the writeable stream that pushes data to disk 
 		
 		// 7: Delete the temporary directory
-		await rmrf(tmpdir, { log: false });
+		await Promise.all([
+			rmrf(tmpdir, { log: false }),
+			fs.promises.unlink(filepath)
+		]);
 	}
 }
 
