@@ -8,6 +8,7 @@ import path from 'path';
 
 import workerpool from 'workerpool';
 
+import a from '../../helpers/Ansi.mjs';
 import l from '../../helpers/Log.mjs';
 
 import FtpClient from '../ftp/AsyncFtpClient.mjs';
@@ -98,7 +99,7 @@ class DownloadManager extends EventEmitter {
 		return matches[0];
 	}
 	
-	async run(bounds) {
+	async run() {
 		let main_parsing_tmpdir = await fs.promises.mkdir(path.join(
 			this.settings.cli.output,
 			`__tmpdir_parsing`
@@ -110,6 +111,8 @@ class DownloadManager extends EventEmitter {
 		let i = 0;
 		let downloader = await this.start_downloader();
 		for await (let tar_path_next of downloader) {
+			l.log(`${a.fmagenta}[ParallelDownloader] Downloaded ${tar_path_next}${a.reset}`);
+			
 			let tmpdir = await fs.promises.mkdir(path.join(
 				main_parsing_tmpdir,
 				i
@@ -121,7 +124,7 @@ class DownloadManager extends EventEmitter {
 					results_dir,
 					`${this.extract_date(tar_path_next)}.jsonstream.gz`
 				),
-				bounds,
+				settings.bounds,
 				tmpdir
 			);
 			
@@ -158,18 +161,21 @@ class DownloadManager extends EventEmitter {
 		while(this.pool.stats().pendingTasks >= this.pool_max_queue_size)
 			await once(this, "tar_finish");
 		
+		l.log(`[workerpool] Queuing ${a.fblue}${a.hicol}${path.basename(filepath)}${a.reset}`);
+		
 		// Create the wrapper
 		let wrapper = new PromiseWrapper(async () => {
-			await this.pool_proxy.parse_tar(filepath, target, bounds, tmpdir)
+			await this.pool_proxy.parse_tar(filepath, target, bounds, tmpdir);
+			l.log(`${a.fgreen}[workerpool] Parsed ${path.basename(filepath)}${a.reset}`);
+			
+			// Once complete, check the queue to get it to emit the tar_finish event
+			this.queue_tar_check();
 		});
 		
 		// Push it onto the queue
 		this.queue_tar.push(wrapper);
-		// Hacky way to keep track of the promise
-		wrapper._promise = wrapper.run().then(() => {
-			// Once complete, check the queue to get it to emit the tar_finish event
-			this.queue_tar_check();
-		});
+		// Hacky way to keep track of the promise - essentially set-and-forget in this case
+		wrapper._promise = wrapper.run();
 		
 		this.emit("tar_start");
 	}

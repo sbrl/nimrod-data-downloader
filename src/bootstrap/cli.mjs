@@ -59,11 +59,11 @@ export default async function() {
 	
 	cli.argument("bounds-topleft",
 		"(download, extra-area) The top-left corner of the bounding box to extract in the form 'latitude,longitude'",
-		null, (value) => value.split(",").map(parseFloat)
+		[null, null], (value) => value.split(",").map(parseFloat)
 	);
 	cli.argument("bounds-bottomright",
 		"(download, extra-area) The bottom-right corner of the bounding box to extract in the form 'latitude,longitude'",
-		null, (value) => value.split(",").map(parseFloat)
+		[null, null], (value) => value.split(",").map(parseFloat)
 	);
 	
 	// Disable ansi escape codes if requested
@@ -90,6 +90,18 @@ export default async function() {
 	// 2: CLI Argument Parsing
 	
 	settings.cli = cli.parse(process.argv.slice(2));
+	
+	// Parse the bounds into something that ExtractArea can take
+	settings.bounds = {
+		top_left: {
+			latitude: settings.cli.bounds_topleft[0],
+			longitude: settings.cli.bounds_topleft[1]
+		},
+		bottom_right: {
+			latitude: settings.cli.bounds_bottomright[0],
+			longitude: settings.cli.bounds_bottomright[1]
+		},
+	};
 	
 	let action = cli.current_subcommand;
 	
