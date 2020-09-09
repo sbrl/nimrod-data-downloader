@@ -8,6 +8,7 @@ import TOML from '@iarna/toml';
 import CliParser from 'applause-cli';
 
 import a from '../helpers/Ansi.mjs';
+import l from '../helpers/Log.mjs';
 import { settings, load_config } from './settings.mjs';
 
 
@@ -90,6 +91,9 @@ export default async function() {
 	// 2: CLI Argument Parsing
 	
 	settings.cli = cli.parse(process.argv.slice(2));
+	if(settings.cli.verbose) {
+		l.debug(`Activating verbose mode`);
+	}
 	
 	load_config(settings.cli.config);
 	
@@ -128,9 +132,9 @@ export default async function() {
 		await (await import(`${subcommand_directory}/${action}/index.mjs`)).default();
 	}
 	catch(error) {
-		console.error(`\n\n`);
+		console.error();
 		if(settings.cli.verbose) {
-			console.error(`${a.fred}${a.hicol}${error}${a.reset}`);
+			l.error(error);
 		}
 		else {
 			console.error(`${a.fred}${a.hicol}${error.message}${a.reset}`);

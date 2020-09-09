@@ -67,7 +67,8 @@ export default async function() {
 		}
 	}
 	
-	l.info(`Extraction bounding box`, settings.bounds);
+	if(settings.cli.verbose)
+		l.info(`Extraction bounding box`, settings.bounds);
 	
 	// 2: Initialisations
 	let credentials = {
