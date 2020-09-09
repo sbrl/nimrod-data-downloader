@@ -5,6 +5,8 @@ import { promisify } from 'util'
 import path from 'path';
 import fs from 'fs';
 
+import p_retry from 'p-retry';
+
 import PromiseWrapper from '../PromiseWrapper.mjs';
 
 /**
@@ -71,7 +73,14 @@ class ParallelDownloader {
 			);
 			
 			let wrapper = new PromiseWrapper(async () => {
-				await download_single(nextpath, target);
+				await p_retry(async () => {
+					await download_single(nextpath, target);
+				}, {
+					retries: this.settings.cli.retries,
+					onFailedAttempt: () => new Promise((resolve, _reject) => {
+						setTimeout(resolve, this.settings.cli.retry_delay)
+					})
+				});
 			});
 			wrapper._target_path = target;
 			
