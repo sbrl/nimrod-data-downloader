@@ -11,8 +11,10 @@ function load_config_file(loc_settings_custom) {
 	let loc_settings_default = `${path.dirname(__dirname)}/settings.default.toml`;
 	
 	// Create the settings file if it doesn't exist already
-	if(!fs.existsSync(loc_settings_custom))
+	if(!fs.existsSync(loc_settings_custom)) {
 		fs.writeFileSync(loc_settings_custom, `# Custom settings file, created ${new Date().toISOString()}\n`);
+		fs.chmodSync(loc_settings_custom, 0o600);
+	}
 	
 	return settings_read(
 		loc_settings_default,
