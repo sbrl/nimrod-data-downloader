@@ -58,11 +58,11 @@ export default async function() {
 	
 	
 	cli.argument("bounds-topleft",
-		"(download, extra-area) The top-left corner of the bounding box to extract in the form 'latitude,longitude'",
+		"(download, extract-area) The top-left corner of the bounding box to extract in the form 'latitude,longitude'",
 		[null, null], (value) => value.split(",").map(parseFloat)
 	);
 	cli.argument("bounds-bottomright",
-		"(download, extra-area) The bottom-right corner of the bounding box to extract in the form 'latitude,longitude'",
+		"(download, extract-area) The bottom-right corner of the bounding box to extract in the form 'latitude,longitude'",
 		[null, null], (value) => value.split(",").map(parseFloat)
 	);
 	
