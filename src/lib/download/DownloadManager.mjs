@@ -8,6 +8,7 @@ import path from 'path';
 
 import workerpool from 'workerpool';
 
+import settings from '../../bootstrap/settings.mjs';
 import a from '../../helpers/Ansi.mjs';
 import l from '../../helpers/Log.mjs';
 
@@ -19,10 +20,9 @@ import ParallelDownloader from '../ftp/ParallelDownloader.mjs';
 
 
 class DownloadManager extends EventEmitter {
-	constructor(in_settings, in_credentials) {
+	constructor(in_credentials) {
 		super();
 		
-		this.settings = in_settings;
 		this.credentials = in_credentials;
 		
 		this.pool_max_queue_size = os.cpus().length *  1.4;
@@ -51,7 +51,7 @@ class DownloadManager extends EventEmitter {
 		});
 		
 		await this.ftpclient.connectAsyncSimple(
-			this.settings.cli.ftp_url,
+			settings.config.ftp.url,
 			this.credentials.user,
 			this.credentials.password
 		);
@@ -70,8 +70,7 @@ class DownloadManager extends EventEmitter {
 	
 	setup_parallel_downloader() {
 		this.parallel_downloader = new ParallelDownloader(
-			this.ftpclient,
-			this.settings.cli.download_parallel
+			this.ftpclient
 		);
 	}
 	
@@ -79,11 +78,11 @@ class DownloadManager extends EventEmitter {
 	
 	async start_downloader() {
 		let tmp_dir = fs.promises.mkdir(path.join(
-			this.settings.cli.output,
+			settings.config.output,
 			`__tmpdir_tarfiles_download`
 		));
 		
-		let ftp_path = url.parse(this.settings.ftp_url).pathname;
+		let ftp_path = url.parse(settings.config.ftp.url).pathname;
 		let iterator = this.filename_iterator.iterate(ftp_path);
 		
 		return this.parallel_downloader.download_multiple(
@@ -93,7 +92,7 @@ class DownloadManager extends EventEmitter {
 	}
 	
 	extract_date(tar_path) {
-		let matches = path.basename(tar_path_next).match(/[0-9]+/);
+		let matches = path.basename(tar_path).match(/[0-9]+/);
 		if(matches == null)
 			throw new Error(`Error: Failed to extract date from filename ${tar_path_next}.`);
 		return matches[0];
@@ -101,11 +100,11 @@ class DownloadManager extends EventEmitter {
 	
 	async run() {
 		let main_parsing_tmpdir = await fs.promises.mkdir(path.join(
-			this.settings.cli.output,
+			settings.config.output,
 			`__tmpdir_parsing`
 		));
 		let results_dir = await fs.promises.mkdir(path.join(
-			this.settings.cli.output,
+			settings.config.output,
 			`results`
 		));
 		let i = 0;

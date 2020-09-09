@@ -1,41 +1,7 @@
 description = "Download the NIMROD data"
 
 [[arguments]]
-name = "output"
-description = "The output directory"
-type = "string"
-
-[[arguments]]
-name = "ftp-url"
-description = "The absolute url of the FTP server to download the data from (must include the port number too)"
-type = "string"
-default_value = "ftp://ftp.ceda.ac.uk:21/badc/ukmo-nimrod/data/composite/uk-1km"
-
-[[arguments]]
-name = "download-parallel"
-description = "The maximum number of files to download at once"
-type = "integer"
-default_value = 3
-
-[[arguments]]
-name = "retries"
-description = "The number of retries when something goes wrong"
-type = "integer"
-default_value = 3
-
-[[arguments]]
-name = "retry-delay"
-description = "The delay, in milliseconds, between retries"
-type = "integer"
-default_value = 10000
-
-[[arguments]]
 name = "blacklist-file"
-description = "The full name of a file on the server add to the blacklist and to ignore. May be specified multiple times."
+description = "The full name (but not the path) of a file on the server add to the blacklist and to ignore. May be specified multiple times."
 type = "string_multi"
-default_value = [
-	"metoffice-c-band-rain-radar_uk_20110307_1km-composite.dat.gz.tar",
-	"metoffice-c-band-rain-radar_uk_20110309_1km-composite.dat.gz.tar",
-	"metoffice-c-band-rain-radar_uk_20161216_1km-composite.dat.gz.tar",
-	"metoffice-c-band-rain-radar_uk_20161218_1km-composite.dat.gz.tar"
-]
+default_value = []

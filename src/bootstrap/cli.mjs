@@ -8,7 +8,7 @@ import TOML from '@iarna/toml';
 import CliParser from 'applause-cli';
 
 import a from '../helpers/Ansi.mjs';
-import settings from './settings.mjs';
+import { settings, load_config } from './settings.mjs';
 
 
 const __dirname = import.meta.url.slice(7, import.meta.url.lastIndexOf("/"));
@@ -55,7 +55,7 @@ async function get_actions_metadata() {
 export default async function() {
 	let cli = new CliParser(path.resolve(__dirname, "../../package.json"));
 	cli.argument("verbose", "Enable verbose mode.", false, "boolean");
-	
+	cli.argument("config", "Path to the config file to use (default: settings.custom.toml in the current directory)", "./settings.custom.toml", "string");
 	
 	cli.argument("bounds-topleft",
 		"(download, extract-area) The top-left corner of the bounding box to extract in the form 'latitude,longitude'",
@@ -102,6 +102,7 @@ export default async function() {
 			longitude: settings.cli.bounds_bottomright[1]
 		},
 	};
+	load_config(settings.cli.config);
 	
 	let action = cli.current_subcommand;
 	

@@ -1,0 +1,28 @@
+# The output directory to write to
+output = "CHANGE_ME"
+
+
+[ftp]
+### CEDA Data Archive Downloader ###
+
+url = "ftp://ftp.ceda.ac.uk:21/badc/ukmo-nimrod/data/composite/uk-1km"
+
+# The FTP login credentials to use when downloading the data
+# FTP is indeed very insecure, but it's the best we've got to work it :-/
+username = "CHANGE_ME"
+password = "CHANGE_ME"
+
+# Download up to 3 files simultaneously
+parallel = 3
+# Retry downloading a file up to 3 times if it fails
+retries = 3
+# Delay retries by this many milliseconds
+retry_delay = 2500
+
+# Files to skip and ignore.
+blacklist = [
+	"metoffice-c-band-rain-radar_uk_20110307_1km-composite.dat.gz.tar",
+	"metoffice-c-band-rain-radar_uk_20110309_1km-composite.dat.gz.tar",
+	"metoffice-c-band-rain-radar_uk_20161216_1km-composite.dat.gz.tar",
+	"metoffice-c-band-rain-radar_uk_20161218_1km-composite.dat.gz.tar"
+]

@@ -1,4 +1,4 @@
-description = "Express the bounds of the given file in GeoJSON."
+description = "[CRASHES] Express the bounds of the given file in GeoJSON."
 
 [[arguments]]
 name = "input"

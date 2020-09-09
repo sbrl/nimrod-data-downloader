@@ -7,6 +7,7 @@ import fs from 'fs';
 
 import p_retry from 'p-retry';
 
+import settings from '../../bootstrap/settings.mjs';
 import PromiseWrapper from '../PromiseWrapper.mjs';
 
 /**
@@ -14,10 +15,8 @@ import PromiseWrapper from '../PromiseWrapper.mjs';
  * The FTP client instance must be provided separately during initialisation.
  */
 class ParallelDownloader {
-	constructor(in_ftpclient, in_parallel = 3) {
+	constructor(in_ftpclient) {
 		this.ftpclient = in_ftpclient;
-		/** The number of simultaneous downloads we should do at once. @type {Number} */
-		this.parallel = in_parallel;
 		
 		this.pipeline = promisify(pipeline);
 	}
@@ -62,7 +61,7 @@ class ParallelDownloader {
 		
 		let i = 0;
 		for await (let nextpath of generator()) {
-			if(wrappers.length > this.parallel) {
+			if(wrappers.length > settings.config.ftp.parallel) {
 				let resolved_wrapper = await this.wait_for_completion(wrappers, promises);
 				yield resolved_wrapper._target_path;
 			}
@@ -76,9 +75,9 @@ class ParallelDownloader {
 				await p_retry(async () => {
 					await download_single(nextpath, target);
 				}, {
-					retries: this.settings.cli.retries,
+					retries: settings.config.ftp.retries,
 					onFailedAttempt: () => new Promise((resolve, _reject) => {
-						setTimeout(resolve, this.settings.cli.retry_delay)
+						setTimeout(resolve, settings.config.ftp.retry_delay)
 					})
 				});
 			});

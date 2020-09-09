@@ -21,7 +21,7 @@ class FilenameIterator {
 	}
 	
 	async *iterate(remote_path) {
-		let year_dirs = (await this.ftpclient.listAsync(this.settings.ceda.ftp_path))
+		let year_dirs = (await this.ftpclient.listAsync(remote_path))
 			.filter((obj) => obj.type == "d")
 			.map((obj) => obj.name);
 		

@@ -1,4 +1,4 @@
-description = "[advanced] Parses a file and displays the raw output of the parser"
+description = "[CRASHES] [advanced] Parses a file and displays the raw output of the parser"
 
 [[arguments]]
 name = "input"
