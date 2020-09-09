@@ -1,13 +1,21 @@
 "use strict";
 
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import os from 'os';
+import url from 'url';
+import fs from 'fs';
+import path from 'path';
 
 import workerpool from 'workerpool';
 
 import l from '../../helpers/Log.mjs';
+
 import FtpClient from '../ftp/AsyncFtpClient.mjs';
+import PromiseWrapper from '../PromiseWrapper.mjs';
+
 import FilenameIterator from '../ftp/FilenameIterator.mjs';
+import ParallelDownloader from '../ftp/ParallelDownloader.mjs';
+
 
 class DownloadManager extends EventEmitter {
 	constructor(in_settings, in_credentials) {
@@ -18,6 +26,10 @@ class DownloadManager extends EventEmitter {
 		
 		this.pool_max_queue_size = os.cpus().length *  1.4;
 		
+		/**
+		 * The 
+		 * @type {Array}
+		 */
 		this.queue_tar = [];
 	}
 	
@@ -26,6 +38,7 @@ class DownloadManager extends EventEmitter {
 			this.setup_ftp_client(),
 			this.setup_worker_pool()
 		]);
+		this.setup_parallel_downloader();
 	}
 	
 	async setup_ftp_client() {
@@ -54,27 +67,110 @@ class DownloadManager extends EventEmitter {
 		this.pool_proxy = await this.pool.proxy();
 	}
 	
-	async run() {
+	setup_parallel_downloader() {
+		this.parallel_downloader = new ParallelDownloader(
+			this.ftpclient,
+			this.settings.cli.download_parallel
+		);
+	}
+	
+	// ------------------------------------------------------------------------
+	
+	async start_downloader() {
+		let tmp_dir = fs.promises.mkdir(path.join(
+			this.settings.cli.output,
+			`__tmpdir_tarfiles_download`
+		));
 		
+		let ftp_path = url.parse(this.settings.ftp_url).pathname;
+		let iterator = this.filename_iterator.iterate(ftp_path);
+		
+		return this.parallel_downloader.download_multiple(
+			iterator,
+			tmp_dir
+		);
+	}
+	
+	extract_date(tar_path) {
+		let matches = path.basename(tar_path_next).match(/[0-9]+/);
+		if(matches == null)
+			throw new Error(`Error: Failed to extract date from filename ${tar_path_next}.`);
+		return matches[0];
+	}
+	
+	async run(bounds) {
+		let main_parsing_tmpdir = await fs.promises.mkdir(path.join(
+			this.settings.cli.output,
+			`__tmpdir_parsing`
+		));
+		let results_dir = await fs.promises.mkdir(path.join(
+			this.settings.cli.output,
+			`results`
+		));
+		let i = 0;
+		let downloader = await this.start_downloader();
+		for await (let tar_path_next of downloader) {
+			let tmpdir = await fs.promises.mkdir(path.join(
+				main_parsing_tmpdir,
+				i
+			));
+			
+			await queue_pool_tar(
+				tar_path_next,
+				path.join(
+					results_dir,
+					`${this.extract_date(tar_path_next)}.jsonstream.gz`
+				),
+				bounds,
+				tmpdir
+			);
+			
+			i++;
+		}
 	}
 	
 	queue_tar_check() {
 		for(let i in this.queue_tar) {
-			// TODO: Wrap promise so we can check its state
-			if(promise_is_fulfilled) {
+			// It's finished! We shoudl do something about it.
+			if(this.queue_tar[i].is_finished) {
+				// Check if it failed
+				if(this.queue_tar[i].is_failed)
+					throw new ErrorWrapper(`Error: Worker pool tar parsing promise rejected!`, this.queue_tar[i].error);
+				
+				// Remove it from the list
 				this.queue_tar.splice(i, 1)[0];
-				this.emit("tar_finis");
+				
+				// Emit the finish event
+				this.emit("tar_finish");
 			}
 		}
 	}
 	
+	/**
+	 * Queues the parsing of a tar file on the workerpool.
+	 * @param	{string}	filepath	The path to the tar file to parse. Will be automatically deleted oncce parsing is complete.
+	 * @param	{string}	target		The path to the file to write the result to (as a gzipped stream of json objects)
+	 * @param	{Object}	bounds		The bounds of the data that should be extracted.
+	 * @param	{string}	tmpdir		The path to an *empty* temporary directory to use during the parsing process. Will be deleted automatically once the parsing process is complete.
+	 * @return	{Promise}	A promise that resolves when the parsing process has *started* (note that the resolution of this Promise only indicates that the job has been successfully added to the queue, not that it has actually started yet).
+	 */
 	async queue_pool_tar(filepath, target, bounds, tmpdir) {
 		while(this.pool.stats().pendingTasks >= this.pool_max_queue_size)
 			await once(this, "tar_finish");
 		
-		this.queue_tar.push(
-			this.pool_proxy.parse_tar(filepath, target, bounds, tmpdir)
-		);
+		// Create the wrapper
+		let wrapper = new PromiseWrapper(async () => {
+			await this.pool_proxy.parse_tar(filepath, target, bounds, tmpdir)
+		});
+		
+		// Push it onto the queue
+		this.queue_tar.push(wrapper);
+		// Hacky way to keep track of the promise
+		wrapper._promise = wrapper.run().then(() => {
+			// Once complete, check the queue to get it to emit the tar_finish event
+			this.queue_tar_check();
+		});
+		
 		this.emit("tar_start");
 	}
 }

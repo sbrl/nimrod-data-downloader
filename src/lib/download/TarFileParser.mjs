@@ -20,6 +20,7 @@ class TarFileParser {
 	 * Deletes both the tar file and the temporary directory when done.
 	 * @param	{string}	filepath	The path to the file to parse.
 	 * @param	{string}	target		The path to the destination file to write to.
+	 * @param	{Object}	bounds		The bounds to extract.
 	 * @param	{string}	tmpdir		Path to an *empty* directory *that exists* to use as a temporary working area.
 	 * @return	{Promise}	A promise that resolves when parsing & writing back to disk is complete.
 	 */
