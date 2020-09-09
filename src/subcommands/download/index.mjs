@@ -5,6 +5,8 @@ import fs from 'fs';
 import settings from '../../bootstrap/settings.mjs';
 import l from '../../helpers/Log.mjs';
 
+import DownloadManager from '../../lib/download/DownloadManager.mjs';
+
 export default async function() {
 	// 1: Validation
 	if(typeof process.env.NIMROD_CEDA_USER !== "string" && settings.config.ftp.username == "CHANGE_ME") {
