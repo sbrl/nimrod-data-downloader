@@ -1,7 +1,6 @@
 # The output directory to write to
 output = "CHANGE_ME"
 
-
 [ftp]
 ### CEDA Data Archive Downloader ###
 
@@ -26,3 +25,9 @@ blacklist = [
 	"metoffice-c-band-rain-radar_uk_20161216_1km-composite.dat.gz.tar",
 	"metoffice-c-band-rain-radar_uk_20161218_1km-composite.dat.gz.tar"
 ]
+
+[parsing]
+
+[parsing.bounds]
+	# top_left = 		{ latitude = -9999, longitude = -9999 }
+	# bottom_right =	{ latitude = -9999, longitude = -9999 }

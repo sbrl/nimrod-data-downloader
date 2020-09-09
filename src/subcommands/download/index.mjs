@@ -5,15 +5,21 @@ import l from '../../helpers/Log.mjs';
 
 export default async function() {
 	// 1: Validation
-	if(typeof process.env.NIMROD_CEDA_USER !== "string") {
+	if(typeof process.env.NIMROD_CEDA_USER !== "string" && settings.config.ftp.username == "CHANGE_ME") {
 		l.error(`Error: The environment variable NIMROD_CEDA_USER is not set.`);
 		process.exit(1);
 	}
-	if(typeof process.env.NIMROD_CEDA_PASSWORD !== "string") {
+	if(typeof process.env.NIMROD_CEDA_PASSWORD !== "string" && settings.config.ftp.password == "CHANGE_ME") {
 		l.error(`Error: The environment variable NIMROD_CEDA_PASSWORD is not set.`);
 		process.exit(1);
 	}
 	// Validate the bounding box that we want to extract
+	if(typeof settings.bounds.top_left == "undefined") {
+		l.error(`Error: The latitude and longitude for the top-left corner of the bounds are not specified.`);
+	}
+	if(typeof settings.bounds.bottom_right == "undefined") {
+		l.error(`Error: The latitude and longitude for the bottom-right corner of the bounds are not specified.`);
+	}
 	if(settings.bounds.top_left.latitude == null) {
 		l.error(`Error: The latitude for the top-left corner of the bounds is null.`);
 		process.exit(2);
@@ -30,6 +36,8 @@ export default async function() {
 		l.error(`Error: The longitude for the bottom-right corner of the bounds is null.`);
 		process.exit(2);
 	}
+	
+	// Validate the other settings
 	if(typeof settings.config.output != "string" || settings.config.output == "CHANGE_ME") {
 		l.error(`Error: No output directory was specified in the config file.`);
 		process.exit(2);

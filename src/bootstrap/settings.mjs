@@ -3,6 +3,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import settings_read from '../helpers/TomlSettings.mjs';
+
 const __dirname = import.meta.url.slice(7, import.meta.url.lastIndexOf("/"));
 
 var settings = null;

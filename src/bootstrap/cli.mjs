@@ -91,18 +91,23 @@ export default async function() {
 	
 	settings.cli = cli.parse(process.argv.slice(2));
 	
-	// Parse the bounds into something that ExtractArea can take
-	settings.bounds = {
-		top_left: {
-			latitude: settings.cli.bounds_topleft[0],
-			longitude: settings.cli.bounds_topleft[1]
-		},
-		bottom_right: {
-			latitude: settings.cli.bounds_bottomright[0],
-			longitude: settings.cli.bounds_bottomright[1]
-		},
-	};
 	load_config(settings.cli.config);
+	
+	// Parse the bounds into something that ExtractArea can take
+	settings.bounds = settings.config.parsing.bounds;
+	
+	if(typeof settings.cli.bounds_topleft != "undefined") {
+		if(typeof settings.cli.bounds_topleft[0] == "number")
+			settings.bounds.top_left.latitude = settings.cli.bounds_topleft[0];
+		if(typeof settings.cli.bounds_topleft[1] == "number")
+			settings.bounds.top_left.longitude = settings.cli.bounds_topleft[1]
+	}
+	if(typeof settings.cli.bounds_bottomright != "undefined") {
+		if(typeof settings.cli.bounds_bottomright[0] == "number")
+			settings.bounds.bottom_right.latitude = settings.cli.bounds_bottomright[0];
+		if(typeof settings.cli.bounds_bottomright[1] == "number")
+			settings.bounds.bottom_right.longitude = settings.cli.bounds_bottomright[1]
+	}
 	
 	let action = cli.current_subcommand;
 	
