@@ -13,7 +13,7 @@ import a from '../../helpers/Ansi.mjs';
 import l from '../../helpers/Log.mjs';
 
 import FtpClient from '../ftp/AsyncFtpClient.mjs';
-import PromiseWrapper from '../PromiseWrapper.mjs';
+import PromiseWrapper from '../async/PromiseWrapper.mjs';
 
 import FilenameIterator from '../ftp/FilenameIterator.mjs';
 import ParallelDownloader from '../ftp/ParallelDownloader.mjs';
