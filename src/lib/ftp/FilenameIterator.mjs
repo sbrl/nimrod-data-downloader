@@ -33,6 +33,7 @@ class FilenameIterator {
 		l.log(`[FilenameIterator] Found years on server: ${year_dirs.join(", ")}`);
 		
 		for(let year_str of year_dirs) {
+			let year = parseInt(year_str, 10);
 			if(year <= 2005) {
 				l.warn(`[FilenameIterator] Skipping year ${year} because of format problems`);
 				count_done++;
