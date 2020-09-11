@@ -93,10 +93,9 @@ class DownloadManager extends EventEmitter {
 		await fs.promises.mkdir(tmp_dir);
 		
 		let ftp_path = url.parse(settings.config.ftp.url).pathname;
-		let iterator = this.filename_iterator.iterate(ftp_path);
 		
 		return this.parallel_downloader.download_multiple(
-			iterator,
+			this.filename_iterator.iterate.bind(this.filename_iterator, ftp_path),
 			tmp_dir
 		);
 	}
