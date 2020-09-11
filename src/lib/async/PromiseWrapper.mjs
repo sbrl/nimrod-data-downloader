@@ -2,7 +2,7 @@
 
 import EventEmitter from 'events';
 
-import { ErrorWrapper } from './Errors.mjs';
+import { ErrorWrapper } from '../Errors.mjs';
 
 /**
  * Wraps and tracks the resolution of a Promise returned by an async function.
