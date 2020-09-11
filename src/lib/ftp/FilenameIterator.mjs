@@ -36,7 +36,6 @@ class FilenameIterator {
 			let year = parseInt(year_str, 10);
 			if(year <= 2005) {
 				l.warn(`[FilenameIterator] Skipping year ${year} because of format problems`);
-				count_done++;
 				continue;
 			}
 			
