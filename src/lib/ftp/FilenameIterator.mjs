@@ -30,7 +30,7 @@ class FilenameIterator {
 	}
 	
 	async *iterate(remote_path) {
-		let year_dirs = (await retry_async(this.ftpclient.listAsync(remote_path), {
+		let year_dirs = (await retry_async(async => await this.ftpclient.listAsync(remote_path), {
 				retries: settings.config.ftp.retries,
 				onFailedAttempt: async () => sleep_async(settings.config.ftp.retry_delay)
 			}))
