@@ -109,23 +109,29 @@ class DownloadManager extends EventEmitter {
 	}
 	
 	async run() {
-		let main_parsing_tmpdir = await fs.promises.mkdir(path.join(
+		let main_parsing_tmpdir = path.join(
 			settings.config.output,
 			`__tmpdir_parsing`
-		));
-		let results_dir = await fs.promises.mkdir(path.join(
+		);
+		let results_dir = path.join(
 			settings.config.output,
 			`results`
-		));
+		);
+		await Promise.all([
+			fs.promises.mkdir(main_parsing_tmpdir, { recursive: true }),
+			fs.promises.mkdir(results_dir, { recursive: true })
+		]);
+		
 		let i = 0;
 		let downloader = await this.start_downloader();
 		for await (let tar_path_next of downloader) {
 			l.log(`${a.fmagenta}[ParallelDownloader] Downloaded ${tar_path_next}${a.reset}`);
 			
-			let tmpdir = await fs.promises.mkdir(path.join(
+			let tmpdir = path.join(
 				main_parsing_tmpdir,
 				i
-			));
+			);
+			await fs.promises.mkdir(tmpdir);
 			
 			await queue_pool_tar(
 				tar_path_next,
