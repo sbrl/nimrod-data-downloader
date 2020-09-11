@@ -7,6 +7,8 @@ import fs from 'fs';
 
 import p_retry from 'p-retry';
 
+import a from '../../helpers/Ansi.mjs';
+import l from '../../helpers/Log.mjs';
 import settings from '../../bootstrap/settings.mjs';
 import PromiseWrapper from '../PromiseWrapper.mjs';
 
@@ -34,6 +36,7 @@ class ParallelDownloader {
 		if(!fs.existsSync(path.dirname(target)))
 			throw new Error("Error: The target directory does not exist.");
 		
+		l.info(`[ParallelDownloader] Beginning download of ${a.fgreen}${source}${a.reset} to ${a.fgreen}${target}${a.reset}`);
 		let stream_download = await this.ftpclient.getAsync(source);
 		let stream_write = fs.createWriteStream(target);
 		
@@ -41,6 +44,7 @@ class ParallelDownloader {
 			stream_download,
 			stream_write
 		);
+		l.info(`[ParallelDownloader] Saved ${a.fgreen}${source}${a.reset} to ${a.fgreen}${target}${a.reset}`)
 	}
 	
 	/**
@@ -53,8 +57,13 @@ class ParallelDownloader {
 	 * @return	{Generator<Promise<string>>}	An async generator that yields target filenames as they are downloaded.
 	 */
 	async *download_multiple(generator, target_dir) {
+		if(typeof target_dir != "string")
+			throw new Error("Error: The specified target_dir is not a string.");
+		
 		if(!fs.existsSync(target_dir))
 			throw new Error(`Error: The target directory '${target_dir}' does not exist.`);
+		
+		l.log(`[ParallelDownloader] Starting, downloading ${settings.config.ftp.parallel} files in parallel`);
 		
 		let wrappers = [],
 			promises = [];

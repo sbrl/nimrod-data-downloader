@@ -18,12 +18,12 @@ import PromiseWrapper from '../PromiseWrapper.mjs';
 import FilenameIterator from '../ftp/FilenameIterator.mjs';
 import ParallelDownloader from '../ftp/ParallelDownloader.mjs';
 
+// Hack 'cause __dirname isn't defined when we're using ES6 modules for some crazy reason 
+const __dirname = import.meta.url.slice(7, import.meta.url.lastIndexOf("/"));
 
 class DownloadManager extends EventEmitter {
-	constructor(in_credentials) {
+	constructor() {
 		super();
-		
-		this.credentials = in_credentials;
 		
 		this.pool_max_queue_size = os.cpus().length *  1.4;
 		
@@ -50,22 +50,31 @@ class DownloadManager extends EventEmitter {
 			throw error;
 		});
 		
+		l.log(`Connecting to ${a.fgreen}${settings.config.ftp.url}${a.reset}...`);
 		await this.ftpclient.connectAsyncSimple(
 			settings.config.ftp.url,
-			this.credentials.user,
-			this.credentials.password
+			settings.config.ftp.username,
+			settings.config.ftp.password
 		);
+		l.log(`Connected`);
 		
 		// 2: Filename iterator
 		this.filename_iterator = new FilenameIterator(this.ftpclient);
+		this.filename_iterator.blacklist_filename(settings.config.ftp.blacklist);
 	}
 	
 	async setup_worker_pool() {
-		this.pool = workerpool.pool("./DownloadWorkerRoot.mjs", {
-			workerType: "process",
-			maxQueueSize: os.cpus().length * 1.5
-		});
+		this.pool = workerpool.pool(
+			path.join(
+				__dirname,
+				"DownloadWorkerRoot.mjs"
+			), {
+				workerType: "process",
+				maxQueueSize: os.cpus().length * 1.5
+			}
+		);
 		this.pool_proxy = await this.pool.proxy();
+		l.log(`Worker pool initialised`);
 	}
 	
 	setup_parallel_downloader() {
@@ -77,10 +86,11 @@ class DownloadManager extends EventEmitter {
 	// ------------------------------------------------------------------------
 	
 	async start_downloader() {
-		let tmp_dir = fs.promises.mkdir(path.join(
+		let tmp_dir = path.join(
 			settings.config.output,
 			`__tmpdir_tarfiles_download`
-		));
+		);
+		await fs.promises.mkdir(tmp_dir);
 		
 		let ftp_path = url.parse(settings.config.ftp.url).pathname;
 		let iterator = this.filename_iterator.iterate(ftp_path);

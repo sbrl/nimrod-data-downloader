@@ -73,12 +73,12 @@ export default async function() {
 		l.info(`Extraction bounding box`, settings.bounds);
 	
 	// 2: Initialisations
-	let credentials = {
-		user: process.env.NIMROD_CEDA_USER,
-		password: process.env.NIMROD_CEDA_PASSWORD
-	};
-	
-	let download_manager = new DownloadManager(credentials);
+	if(typeof settings.config.ftp.username !== "string")
+		settings.config.ftp.username = process.env.NIMROD_CEDA_USER;
+	if(typeof settings.config.ftp.password !== "string")
+		settings.config.ftp.password = process.env.NIMROD_CEDA_PASSWORD;
+		
+	let download_manager = new DownloadManager();
 	
 	// 3: Run
 	await download_manager.setup();

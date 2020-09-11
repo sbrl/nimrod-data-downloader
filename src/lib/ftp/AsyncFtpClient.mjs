@@ -1,6 +1,6 @@
 "use strict";
 
-import url from url;
+import url from 'url';
 import { promisify } from 'util';
 
 import FtpClient from '@icetee/ftp';
@@ -36,7 +36,8 @@ class AsyncFtpClient extends FtpClient {
 	
 	async connectAsyncSimple(ftp_url, user, password) {
 		let url_parsed = url.parse(ftp_url);
-		await this.client.connectAsync({
+		console.log(`[AsyncFtpClient] host`, url_parsed.hostname, `port`, parseInt(url_parsed.port, 10));
+		await this.connectAsync({
 			host: url_parsed.hostname,
 			port: parseInt(url_parsed.port, 10),
 			

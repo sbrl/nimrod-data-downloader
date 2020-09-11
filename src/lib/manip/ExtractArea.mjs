@@ -1,7 +1,7 @@
 "use strict";
 
-import a from '../../../helpers/Ansi.mjs';
-import l from '../../../helpers/Log.mjs';
+import a from '../../helpers/Ansi.mjs';
+import l from '../../helpers/Log.mjs';
 import { latlng2os, os2arr } from '../../helpers/CoordinateHelpers.mjs';
 
 /**

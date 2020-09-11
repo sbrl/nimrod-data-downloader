@@ -13,7 +13,12 @@ class FilenameIterator {
 	}
 	
 	blacklist_filename(filename) {
-		this.filename_blacklist.set(filename, true);
+		if(typeof filename == "string")
+			this.filename_blacklist.set(filename, true);
+		else if(filename instanceof Array) {
+			for(let next of filename)
+				this.filename_blacklist.set(next, true);
+		}
 	}
 	
 	is_blacklisted(filename) {
@@ -25,9 +30,11 @@ class FilenameIterator {
 			.filter((obj) => obj.type == "d")
 			.map((obj) => obj.name);
 		
+		l.log(`[FilenameIterator] Found years on server: ${year_dirs.join(", ")}`);
+		
 		for(let year_str of year_dirs) {
 			if(year <= 2005) {
-				l.warn(`Skipping year ${year} because of format problems`);
+				l.warn(`[FilenameIterator] Skipping year ${year} because of format problems`);
 				count_done++;
 				continue;
 			}
