@@ -181,8 +181,14 @@ class DownloadManager extends EventEmitter {
 		
 		// Create the wrapper
 		let wrapper = new PromiseWrapper(async () => {
-			await this.pool_proxy.parse_tar(filepath, target, bounds, tmpdir);
-			l.log(`${a.fgreen}[workerpool] Parsed ${path.basename(filepath)}${a.reset}`);
+			let result = await this.pool_proxy.parse_tar(filepath, target, bounds, tmpdir);
+			let filepath_basename = path.basename(filepath);
+			if(result.status == "error") {
+				l.error(`[workerpool] Worker threw error for ${filepath_basename}:`);
+				l.error(result.error);
+			}
+			else
+				l.log(`${a.fgreen}[workerpool] Parsed ${filepath_basename}${a.reset}`);
 			
 			// Once complete, check the queue to get it to emit the tar_finish event
 			this.queue_tar_check();

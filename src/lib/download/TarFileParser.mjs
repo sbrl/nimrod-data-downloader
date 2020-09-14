@@ -10,6 +10,8 @@ import { untar } from '../child_process/tar.mjs';
 import GzipChildProcess from '../child_process/GzipChildProcess.mjs';
 import { end_safe } from '../../helpers/StreamHelpers.mjs';
 
+import l from '../../helpers/Log.mjs';
+
 class TarFileParser {
 	constructor() {
 		this.datfileparser = new DatFileParser();
@@ -48,11 +50,16 @@ class TarFileParser {
 		
 		// 5: Parse the inner files
 		for(let filename of filenames) {
-			await this.datfileparser.parse_file(
-				path.join(tmpdir, filename),
-				gzip.stdin,
-				bounds
-			);
+			try {
+				await this.datfileparser.parse_file(
+					path.join(tmpdir, filename),
+					gzip.stdin,
+					bounds
+				);
+			} catch(error) {
+				l.error(`[DatFileParser] Caught error parsing dat file - skipping:`);
+				l.error(error);
+			}
 		}
 		
 		// 6: Cleanup the output streams

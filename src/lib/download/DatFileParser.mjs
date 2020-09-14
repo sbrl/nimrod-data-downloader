@@ -1,6 +1,7 @@
 "use strict";
 
 import fs from 'fs';
+import path from 'path';
 
 import NimrodParser from '../parser/NimrodParser.mjs';
 import extract_area from '../manip/ExtractArea.mjs';
@@ -30,7 +31,7 @@ class DatFileParser {
 		try {
 			obj = this.parser.parse(buffer);
 		} catch(error) {
-			throw new ErrorWrapper(`Error: Failed parsing binary invalid data from buffer.`, error);
+			throw new ErrorWrapper(`Error: Failed parsing binary invalid data from buffer read from filename ${path.basename(filepath)}.`, error);
 		}
 		if(obj == null)
 			throw new Error(`Error: Binary file parser returned null`);
