@@ -43,7 +43,7 @@ class DatFileParser {
 		}
 		
 		// 4: Write to the output stream
-		await write_json(obj, stream_out);
+		await this.write_json(obj, stream_out);
 	}
 	
 	async read_all_data(filepath) {
