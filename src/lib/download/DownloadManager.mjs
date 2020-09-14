@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 
 import workerpool from 'workerpool';
+import pretty_ms from 'pretty-ms';
 
 import settings from '../../bootstrap/settings.mjs';
 import a from '../../helpers/Ansi.mjs';
@@ -188,7 +189,7 @@ class DownloadManager extends EventEmitter {
 				l.error(result.error);
 			}
 			else
-				l.log(`${a.fgreen}[workerpool]${a.reset} Parsed ${a.fgreen}${a.hicol}${filepath_basename}${a.reset}`);
+				l.log(`${a.fgreen}[workerpool]${a.reset} Parsed ${a.fgreen}${a.hicol}${filepath_basename}${a.reset} in ${pretty_ms(result.time_taken)}`);
 			
 			// Once complete, check the queue to get it to emit the tar_finish event
 			this.queue_tar_check();
