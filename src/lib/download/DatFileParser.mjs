@@ -58,7 +58,7 @@ class DatFileParser {
 	}
 	
 	async write_json(obj, stream_out) {
-		await write_safe(stream_out, JSON.stringify(obj));
+		await write_safe(stream_out, `${JSON.stringify(obj)}\n`);
 	}
 }
 
