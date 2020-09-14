@@ -126,7 +126,7 @@ class DownloadManager extends EventEmitter {
 		let i = 0;
 		let downloader = await this.start_downloader();
 		for await (let tar_path_next of downloader) {
-			l.log(`${a.fmagenta}[ParallelDownloader]${a.reset} Downloaded ${a.fmagenta}${a.hicol}${path.basename(tar_path_next)}${a.reset}`);
+			// l.log(`${a.fmagenta}[ParallelDownloader]${a.reset} Downloaded ${a.fmagenta}${a.hicol}${path.basename(tar_path_next)}${a.reset}`);
 			
 			let tmpdir = path.join(
 				main_parsing_tmpdir,

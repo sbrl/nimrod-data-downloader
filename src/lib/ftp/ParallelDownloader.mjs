@@ -47,7 +47,7 @@ class ParallelDownloader {
 			stream_write
 		);
 		// l.info(`[ParallelDownloader] Saved ${a.fgreen}${source}${a.reset} to ${a.fgreen}${target}${a.reset}`)
-		// l.info(`[ParallelDownloader] Downloaded ${a.fgreen}${path.basename(source)}${a.reset}`)
+		l.info(`${a.fmagenta}[ParallelDownloader]${a.reset} Downloaded ${a.fmagenta}${a.hicol}${path.basename(source)}${a.reset}`)
 	}
 	
 	/**
