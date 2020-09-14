@@ -47,7 +47,7 @@ class FilenameIterator {
 			}
 			
 			let files = await retry_async(
-				async () => await this.client.listAsync(target), {
+				async () => await this.ftpclient.listAsync(target), {
 					retries: settings.config.ftp.retries,
 					onFailedAttempt: async () => sleep_async(settings.config.ftp.retry_delay)
 				}
