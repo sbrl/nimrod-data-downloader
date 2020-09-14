@@ -1,6 +1,5 @@
 "use strict";
 
-import url from 'url';
 import { promisify } from 'util';
 
 import FtpClient from '@icetee/ftp';

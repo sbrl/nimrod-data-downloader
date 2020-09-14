@@ -1,5 +1,7 @@
 "use strict";
 
+import url from 'url';
+
 import AsyncFtpClient from './AsyncFtpClient.mjs';
 
 class FtpClientManager {
