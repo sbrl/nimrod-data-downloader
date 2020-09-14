@@ -11,7 +11,7 @@ import a from '../../helpers/Ansi.mjs';
 import l from '../../helpers/Log.mjs';
 import settings from '../../bootstrap/settings.mjs';
 import PromiseWrapper from '../async/PromiseWrapper.mjs';
-import sleep_async from '../async/Sleep.mjs';
+import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
 
 /**
  * Parallel FTP download manager.
@@ -86,7 +86,10 @@ class ParallelDownloader {
 					await download_single(nextpath, target);
 				}, {
 					retries: settings.config.ftp.retries,
-					onFailedAttempt: async () => sleep_async(settings.config.ftp.retry_delay)
+					onFailedAttempt: make_on_failure_handler(
+						`[ParallelDownloader/download_single_wrapper]`,
+						settings.config.ftp.retry_delay
+					)
 				});
 			});
 			wrapper._target_path = target;
