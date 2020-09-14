@@ -114,12 +114,15 @@ class ParallelDownloader {
 		for(let i = 0; i < wrappers.length; i++) {
 			if(wrappers[i].is_finished) {
 				let wrapper = wrappers.splice(i, 1);
-				promises.splice(i, 1);
+				promises.splice(i, 1); // Remove the raw promise from the secondary tracking array too
 				
-				if(wrapper.is_failed)
+				if(wrapper.length < 1)
+					throw new Error(`Error: No wrapper was spliced!`);
+					
+				if(wrapper[0].is_failed)
 					throw new Error(`Error: Promise failed!`);
 				
-				return wrapper;
+				return wrapper[0];
 			}
 		}
 		throw new Error(`Error: Failed to locate resolved promise.`);
