@@ -11,7 +11,7 @@ import a from '../../helpers/Ansi.mjs';
 import l from '../../helpers/Log.mjs';
 import settings from '../../bootstrap/settings.mjs';
 import PromiseWrapper from '../async/PromiseWrapper.mjs';
-import ErrorWrapper from '../Errors.mjs';
+import { ErrorWrapper } from '../Errors.mjs';
 import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
 
 /**
