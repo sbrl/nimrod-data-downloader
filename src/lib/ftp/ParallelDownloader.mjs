@@ -11,6 +11,7 @@ import a from '../../helpers/Ansi.mjs';
 import l from '../../helpers/Log.mjs';
 import settings from '../../bootstrap/settings.mjs';
 import PromiseWrapper from '../async/PromiseWrapper.mjs';
+import ErrorWrapper from '../Errors.mjs';
 import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
 
 /**
@@ -126,7 +127,7 @@ class ParallelDownloader {
 					throw new Error(`Error: No wrapper was spliced!`);
 					
 				if(wrapper[0].is_failed)
-					throw new Error(`Error: Promise failed!`);
+					throw new ErrorWrapper(`[ParallelDownloader/wait_for_completion] Error: Promise failed!`, wrapper[0].error);
 				
 				return wrapper[0];
 			}
