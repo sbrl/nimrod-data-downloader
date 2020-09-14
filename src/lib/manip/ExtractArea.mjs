@@ -8,10 +8,11 @@ import { latlng2os, os2arr } from '../../helpers/CoordinateHelpers.mjs';
  * Extracts a subsection of the given file.
  * The extraction is done in OS mational grid references with northing + 
  * easting, because the data itself is only rectangluar when presented as such.
- * @param  {Object} bounds The bounds object.
- * @param  {NimrodFile} file     The file to extract from. See NimrodParser.
+ * @param	{Object}		bounds	The bounds object.
+ * @param	{NimrodFile}	file	The file to extract from. See NimrodParser.
+ * @returns	{Object}		An object containing the extracted data and the associated metadata.
  */
-export default async function(bounds_extract, file) {
+export default function(bounds_extract, file) {
 	/* bounds_extract format *
 	{
 		top_left: { latitude: float, longitude: float },
