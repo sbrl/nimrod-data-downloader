@@ -25,7 +25,7 @@ class DownloadManager extends EventEmitter {
 	constructor() {
 		super();
 		
-		this.pool_max_queue_size = os.cpus().length *  1.4;
+		this.pool_max_queue_size = Math.floor(os.cpus().length * 1.4);
 		
 		/**
 		 * The 
@@ -70,7 +70,8 @@ class DownloadManager extends EventEmitter {
 				"DownloadWorkerRoot.mjs"
 			), {
 				workerType: "process",
-				maxQueueSize: os.cpus().length * 1.5
+				maxQueueSize: Math.floor(os.cpus().length * 1.5),
+				maxWorkers: os.cpus().length
 			}
 		);
 		this.pool_proxy = await this.pool.proxy();
