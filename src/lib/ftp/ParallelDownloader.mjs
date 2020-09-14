@@ -83,7 +83,7 @@ class ParallelDownloader {
 			
 			let wrapper = new PromiseWrapper(async () => {
 				await p_retry(async () => {
-					await download_single(nextpath, target);
+					await this.download_single(nextpath, target);
 				}, {
 					retries: settings.config.ftp.retries,
 					onFailedAttempt: make_on_failure_handler(
