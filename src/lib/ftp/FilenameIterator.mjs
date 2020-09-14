@@ -49,8 +49,13 @@ class FilenameIterator {
 				continue;
 			}
 			
+			let next_target = path.join(
+				remote_path,
+				year
+			);
+			
 			let files = await retry_async(
-				async () => await this.ftpclient.listAsync(target), {
+				async () => await this.ftpclient.listAsync(next_target), {
 					retries: settings.config.ftp.retries,
 					onFailedAttempt: make_on_failure_handler(
 						`[FilenameIterator/list_year_contents]`,
