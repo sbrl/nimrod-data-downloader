@@ -82,15 +82,20 @@ class ParallelDownloader {
 				`${i}-${path.basename(nextpath)}`
 			);
 			
+			let wrapper_failure_handler = make_on_failure_handler(
+				`[ParallelDownloader/download_single_wrapper]`,
+				settings.config.ftp.retry_delay
+			);
 			let wrapper = new PromiseWrapper(async () => {
 				await p_retry(async () => {
 					await this.download_single(nextpath, target);
 				}, {
 					retries: settings.config.ftp.retries,
-					onFailedAttempt: make_on_failure_handler(
-						`[ParallelDownloader/download_single_wrapper]`,
-						settings.config.ftp.retry_delay
-					)
+					maxRetryTime: settings.config.ftp.download_timeout * 1000,
+					onFailedAttempt: async (error) => {
+						this.ftpclient.destroy_and_reconnect();
+						await wrapper_failure_handler(error);
+					}
 				});
 			});
 			wrapper._target_path = target;

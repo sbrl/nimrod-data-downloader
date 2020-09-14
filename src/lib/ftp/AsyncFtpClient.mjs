@@ -37,13 +37,19 @@ class AsyncFtpClient extends FtpClient {
 	async connectAsyncSimple(ftp_url, user, password) {
 		let url_parsed = url.parse(ftp_url);
 		console.log(`[AsyncFtpClient] host`, url_parsed.hostname, `port`, parseInt(url_parsed.port, 10));
-		await this.connectAsync({
+		this.__connect_obj = {
 			host: url_parsed.hostname,
 			port: parseInt(url_parsed.port, 10),
 			
 			user,
 			password
-		});
+		};
+		await this.connectAsync(this.__connect_obj);
+	}
+	
+	async destroy_and_reconnect() {
+		this.destroy();
+		await this.connectAsync(this.__connect_obj);
 	}
 	
 	connectAsync(obj) {
