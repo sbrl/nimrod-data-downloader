@@ -66,7 +66,7 @@ class FilenameIterator {
 			files.sort();
 			
 			for(let filename of files) {
-				if(is_blacklisted) {
+				if(this.is_blacklisted(filename)) {
 					l.log(`[FilenameIterator] Skipping blacklisted filename ${a.hicol}${filename}${a.reset}`);
 					continue;
 				}
