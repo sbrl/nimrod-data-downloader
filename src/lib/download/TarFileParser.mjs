@@ -58,7 +58,7 @@ class TarFileParser {
 		// 6: Cleanup the output streams
 		await end_safe(gzip.stdin);	// gzip stdin
 		await gzip.wait_for_exit(); // wait for gzip to finish up
-		await end_safe(stream_out); // close the writeable stream that pushes data to disk 
+		await end_safe(out_disk); // close the writeable stream that pushes data to disk 
 		
 		// 7: Delete the temporary directory
 		await Promise.all([
