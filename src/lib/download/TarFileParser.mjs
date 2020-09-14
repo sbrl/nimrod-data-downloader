@@ -47,7 +47,11 @@ class TarFileParser {
 		
 		// 5: Parse the inner files
 		for(let filename of filenames) {
-			await this.datfileparser.parse_file(filename, gzip.stdin, bounds);
+			await this.datfileparser.parse_file(
+				path.join(tmpdir, filename),
+				gzip.stdin,
+				bounds
+			);
 		}
 		
 		// 6: Cleanup the output streams
