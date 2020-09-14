@@ -176,7 +176,7 @@ class DownloadManager extends EventEmitter {
 			await once(this, "tar_finish");
 		
 		let stats = this.pool.stats();
-		l.log(`[workerpool] Queuing ${a.fblue}${a.hicol}${path.basename(filepath)}${a.reset} (current status: ${stats.pendingTasks} tasks pending; ${this.pool_max_queue_size} max pending allowed; ${busyWorkers}/${totalWorkers} workers busy)`);
+		l.log(`[workerpool] Queuing ${a.fblue}${a.hicol}${path.basename(filepath)}${a.reset} (current status: ${stats.pendingTasks} tasks pending; ${this.pool_max_queue_size} max pending allowed; ${stats.busyWorkers}/${stats.totalWorkers} workers busy)`);
 		
 		// Create the wrapper
 		let wrapper = new PromiseWrapper(async () => {
