@@ -1,6 +1,6 @@
 "use strict";
 
-import { EventEmitter } from 'events';
+import { EventEmitter, once } from 'events';
 import os from 'os';
 import url from 'url';
 import fs from 'fs';
