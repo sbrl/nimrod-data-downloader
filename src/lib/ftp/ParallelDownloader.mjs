@@ -19,8 +19,8 @@ import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
  * The FTP client instance must be provided separately during initialisation.
  */
 class ParallelDownloader {
-	constructor(in_ftpclient) {
-		this.ftpclient = in_ftpclient;
+	constructor(in_ftp) {
+		this.ftp = in_ftp;
 		
 		this.pipeline = promisify(pipeline);
 	}
@@ -39,7 +39,7 @@ class ParallelDownloader {
 			throw new Error("Error: The target directory does not exist.");
 		
 		// l.info(`[ParallelDownloader] Beginning download of ${a.fgreen}${source}${a.reset} to ${a.fgreen}${target}${a.reset}`);
-		let stream_download = await this.ftpclient.getAsync(source);
+		let stream_download = await this.ftp.client.getAsync(source);
 		let stream_write = fs.createWriteStream(target);
 		
 		await this.pipeline(
@@ -94,7 +94,7 @@ class ParallelDownloader {
 					retries: settings.config.ftp.retries,
 					maxRetryTime: settings.config.ftp.download_timeout * 1000,
 					onFailedAttempt: async (error) => {
-						this.ftpclient.destroy_and_reconnect();
+						await this.ftp.force_reconnect();
 						await wrapper_failure_handler(error);
 					}
 				});

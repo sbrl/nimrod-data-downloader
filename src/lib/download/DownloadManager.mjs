@@ -13,7 +13,7 @@ import settings from '../../bootstrap/settings.mjs';
 import a from '../../helpers/Ansi.mjs';
 import l from '../../helpers/Log.mjs';
 
-import FtpClient from '../ftp/AsyncFtpClient.mjs';
+import FtpClientManager from '../ftp/FtpClientManager.mjs';
 import PromiseWrapper from '../async/PromiseWrapper.mjs';
 
 import FilenameIterator from '../ftp/FilenameIterator.mjs';
@@ -45,14 +45,14 @@ class DownloadManager extends EventEmitter {
 	
 	async setup_ftp_client() {
 		// 1: Initialise FTP client
-		this.ftpclient = new FtpClient();
-		this.ftpclient.on("error", (error) => {
+		this.ftp = new FtpClientManager();
+		this.ftp.client.on("error", (error) => {
 			this.emit("error", error);
 			throw error;
 		});
 		
 		l.log(`Connecting to ${a.fgreen}${settings.config.ftp.url}${a.reset}...`);
-		await this.ftpclient.connectAsyncSimple(
+		await this.ftp.connect(
 			settings.config.ftp.url,
 			settings.config.ftp.username,
 			settings.config.ftp.password
@@ -60,7 +60,7 @@ class DownloadManager extends EventEmitter {
 		l.log(`Connected`);
 		
 		// 2: Filename iterator
-		this.filename_iterator = new FilenameIterator(this.ftpclient);
+		this.filename_iterator = new FilenameIterator(this.ftp);
 		this.filename_iterator.blacklist_filename(settings.config.ftp.blacklist);
 	}
 	
@@ -81,7 +81,7 @@ class DownloadManager extends EventEmitter {
 	
 	setup_parallel_downloader() {
 		this.parallel_downloader = new ParallelDownloader(
-			this.ftpclient
+			this.ftp
 		);
 	}
 	

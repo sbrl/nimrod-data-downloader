@@ -10,8 +10,8 @@ import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
 import retry_async from 'p-retry';
 
 class FilenameIterator {
-	constructor(in_ftpclient) {
-		this.ftpclient = in_ftpclient;
+	constructor(in_ftp) {
+		this.ftp = in_ftp;
 		
 		this.filename_blacklist = new Map();
 	}
@@ -30,7 +30,7 @@ class FilenameIterator {
 	}
 	
 	async *iterate(remote_path) {
-		let year_dirs = (await retry_async(async () => await this.ftpclient.listAsync(remote_path), {
+		let year_dirs = (await retry_async(async () => await this.ftp.client.listAsync(remote_path), {
 				retries: settings.config.ftp.retries,
 				onFailedAttempt: make_on_failure_handler(
 					`[FilenameIterator/list_years]`,
@@ -55,7 +55,7 @@ class FilenameIterator {
 			);
 			
 			let files = await retry_async(
-				async () => await this.ftpclient.listAsync(next_target), {
+				async () => await this.ftp.client.listAsync(next_target), {
 					retries: settings.config.ftp.retries,
 					onFailedAttempt: make_on_failure_handler(
 						`[FilenameIterator/list_year_contents]`,
