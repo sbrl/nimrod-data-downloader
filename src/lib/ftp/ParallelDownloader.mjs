@@ -37,7 +37,7 @@ class ParallelDownloader {
 		if(!fs.existsSync(path.dirname(target)))
 			throw new Error("Error: The target directory does not exist.");
 		
-		l.info(`[ParallelDownloader] Beginning download of ${a.fgreen}${source}${a.reset} to ${a.fgreen}${target}${a.reset}`);
+		// l.info(`[ParallelDownloader] Beginning download of ${a.fgreen}${source}${a.reset} to ${a.fgreen}${target}${a.reset}`);
 		let stream_download = await this.ftpclient.getAsync(source);
 		let stream_write = fs.createWriteStream(target);
 		
@@ -45,7 +45,8 @@ class ParallelDownloader {
 			stream_download,
 			stream_write
 		);
-		l.info(`[ParallelDownloader] Saved ${a.fgreen}${source}${a.reset} to ${a.fgreen}${target}${a.reset}`)
+		// l.info(`[ParallelDownloader] Saved ${a.fgreen}${source}${a.reset} to ${a.fgreen}${target}${a.reset}`)
+		// l.info(`[ParallelDownloader] Downloaded ${a.fgreen}${path.basename(source)}${a.reset}`)
 	}
 	
 	/**
@@ -64,7 +65,7 @@ class ParallelDownloader {
 		if(!fs.existsSync(target_dir))
 			throw new Error(`Error: The target directory '${target_dir}' does not exist.`);
 		
-		l.log(`[ParallelDownloader] Starting, downloading ${settings.config.ftp.parallel} files in parallel`);
+		l.log(`[ParallelDownloader] Starting, downloading ${a.fyellow}${settings.config.ftp.parallel}${a.reset} files in parallel`);
 		
 		let wrappers = [],
 			promises = [];

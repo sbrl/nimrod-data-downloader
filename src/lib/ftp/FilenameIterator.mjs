@@ -72,7 +72,7 @@ class FilenameIterator {
 					continue;
 				}
 				
-				l.log(`[FilenameIterator] Yielding filename ${a.fgreen}${filename}${a.reset} as full path`);
+				// l.log(`[FilenameIterator] Yielding filename ${a.fgreen}${filename}${a.reset} as full path`);
 				
 				yield path.join(
 					remote_path,

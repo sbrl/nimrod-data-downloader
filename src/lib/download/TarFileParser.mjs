@@ -57,7 +57,7 @@ class TarFileParser {
 					bounds
 				);
 			} catch(error) {
-				l.error(`[DatFileParser] Caught error parsing dat file - skipping:`);
+				l.error(`[DatFileParser] Caught error parsing dat file '${filename}' - skipping:`);
 				l.error(error);
 			}
 		}

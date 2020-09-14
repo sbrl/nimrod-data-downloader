@@ -125,7 +125,7 @@ class DownloadManager extends EventEmitter {
 		let i = 0;
 		let downloader = await this.start_downloader();
 		for await (let tar_path_next of downloader) {
-			l.log(`${a.fmagenta}[ParallelDownloader] Downloaded ${tar_path_next}${a.reset}`);
+			l.log(`${a.fmagenta}[ParallelDownloader]${a.reeset} Downloaded ${a.fmagenta}${a.hicol}${tar_path_next}${a.reset}`);
 			
 			let tmpdir = path.join(
 				main_parsing_tmpdir,
@@ -188,7 +188,7 @@ class DownloadManager extends EventEmitter {
 				l.error(result.error);
 			}
 			else
-				l.log(`${a.fgreen}[workerpool] Parsed ${filepath_basename}${a.reset}`);
+				l.log(`${a.fgreen}[workerpool]${a.reset} Parsed ${a.fgreen}${a.hicol}${filepath_basename}${a.reset}`);
 			
 			// Once complete, check the queue to get it to emit the tar_finish event
 			this.queue_tar_check();
