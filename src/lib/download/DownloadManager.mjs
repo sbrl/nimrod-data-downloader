@@ -110,6 +110,12 @@ class DownloadManager extends EventEmitter {
 	}
 	
 	async run() {
+		await fs.promises.copyFile(
+			path.join(__dirname, "postprocess.sh"),
+			path.join(settings.config.output, "postprocess.sh")
+		);
+		await fs.promises.chmod(path.join(settings.config.output, "postprocess.sh"), 0o755);
+		
 		let main_parsing_tmpdir = path.join(
 			settings.config.output,
 			`__tmpdir_parsing`
