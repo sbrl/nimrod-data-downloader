@@ -51,7 +51,7 @@ class FilenameIterator {
 			
 			let next_target = path.join(
 				remote_path,
-				year
+				year_str
 			);
 			
 			let files = await retry_async(
