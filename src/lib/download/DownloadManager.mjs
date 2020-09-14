@@ -132,7 +132,7 @@ class DownloadManager extends EventEmitter {
 			);
 			await fs.promises.mkdir(tmpdir);
 			
-			await queue_pool_tar(
+			await this.queue_pool_tar(
 				tar_path_next,
 				path.join(
 					results_dir,
