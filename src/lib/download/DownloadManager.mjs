@@ -128,7 +128,7 @@ class DownloadManager extends EventEmitter {
 			
 			let tmpdir = path.join(
 				main_parsing_tmpdir,
-				i
+				i.toString()
 			);
 			await fs.promises.mkdir(tmpdir);
 			
