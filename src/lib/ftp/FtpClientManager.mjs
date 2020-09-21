@@ -43,7 +43,7 @@ class FtpClientManager {
 	}
 	
 	async list(filepath) {
-		return await p_retry(async () => {
+		let result = await p_retry(async () => {
 				await p_timeout(
 					this.client.listAsync(filepath),
 					settings.config.ftp.download_timeout * 1000
@@ -58,6 +58,8 @@ class FtpClientManager {
 					);
 				}
 			});
+		console.log(`[DEBUG/FtpClientManager-list] Result`, result);
+		return result;
 	}
 	
 	// We can't wrap getAsync in the way we did above, because crashes may occur part-way through reading from the stream.
