@@ -44,7 +44,7 @@ class FtpClientManager {
 	
 	async list(filepath) {
 		let result = await p_retry(async () => {
-				await p_timeout(
+				return await p_timeout(
 					this.client.listAsync(filepath),
 					settings.config.ftp.download_timeout * 1000
 				);

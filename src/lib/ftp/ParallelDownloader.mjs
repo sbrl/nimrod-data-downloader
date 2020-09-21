@@ -89,8 +89,8 @@ class ParallelDownloader {
 				settings.config.ftp.retry_delay
 			);
 			let wrapper = new PromiseWrapper(async () => {
-				await p_retry(async () => {
-					await p_timeout(
+				return await p_retry(async () => {
+					return await p_timeout(
 						this.download_single(nextpath, target),
 						settings.config.ftp.download_timeout * 1000
 					);
