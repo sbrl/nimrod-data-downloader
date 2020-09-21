@@ -6,6 +6,7 @@ import path from 'path';
 import fs from 'fs';
 
 import p_retry from 'p-retry';
+import p_timeout from 'p-timeout';
 
 import a from '../../helpers/Ansi.mjs';
 import l from '../../helpers/Log.mjs';
@@ -89,7 +90,10 @@ class ParallelDownloader {
 			);
 			let wrapper = new PromiseWrapper(async () => {
 				await p_retry(async () => {
-					await this.download_single(nextpath, target);
+					await p_timeout(
+						this.download_single(nextpath, target),
+						settings.config.ftp.download_timeout * 1000
+					);
 				}, {
 					retries: settings.config.ftp.retries,
 					maxRetryTime: settings.config.ftp.download_timeout * 1000,

@@ -2,7 +2,12 @@
 
 import url from 'url';
 
+import p_retry from 'p-retry';
+import p_timeout from 'p-timeout';
+
+import settings from '../../bootstrap/settings.mjs';
 import AsyncFtpClient from './AsyncFtpClient.mjs';
+import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
 
 class FtpClientManager {
 	constructor() {
@@ -36,6 +41,26 @@ class FtpClientManager {
 		this.client = new AsyncFtpClient();
 		await this.do_connect();
 	}
+	
+	async list(filepath) {
+		return await p_retry(async () => {
+				await p_timeout(
+					this.client.listAsync(filepath),
+					settings.config.ftp.download_timeout * 1000
+				);
+			}, {
+				retries: settings.config.ftp.retries,
+				onFailedAttempt: async () => {
+					this.force_reconnect();
+					await make_on_failure_handler(
+						`[FilenameIterator/list_years]`,
+						settings.config.ftp.retry_delay
+					);
+				}
+			});
+	}
+	
+	// We can't wrap getAsync in the way we did above, because crashes may occur part-way through reading from the stream.
 }
 
 export default FtpClientManager;

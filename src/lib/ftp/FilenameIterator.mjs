@@ -2,12 +2,14 @@
 
 import path from 'path';
 
+import p_retry from 'p-retry';
+import p_timeout from 'p-timeout';
+
 import settings from '../../bootstrap/settings.mjs';
 import a from '../../helpers/Ansi.mjs';
 import l from '../../helpers/Log.mjs';
 import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
 
-import retry_async from 'p-retry';
 
 class FilenameIterator {
 	constructor(in_ftp) {
@@ -30,13 +32,7 @@ class FilenameIterator {
 	}
 	
 	async *iterate(remote_path) {
-		let year_dirs = (await retry_async(async () => await this.ftp.client.listAsync(remote_path), {
-				retries: settings.config.ftp.retries,
-				onFailedAttempt: make_on_failure_handler(
-					`[FilenameIterator/list_years]`,
-					settings.config.ftp.retry_delay
-				)
-			}))
+		let year_dirs = (await this.ftp.list(remote_path))
 			.filter((obj) => obj.type == "d")
 			.map((obj) => obj.name);
 		
@@ -54,15 +50,7 @@ class FilenameIterator {
 				year_str
 			);
 			
-			let files = await retry_async(
-				async () => await this.ftp.client.listAsync(next_target), {
-					retries: settings.config.ftp.retries,
-					onFailedAttempt: make_on_failure_handler(
-						`[FilenameIterator/list_year_contents]`,
-						settings.config.ftp.retry_delay
-					)
-				}
-			);
+			let files = await this.ftp.list(next_target);
 			files.sort();
 			
 			for(let filename_obj of files) {

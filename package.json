@@ -30,6 +30,7 @@
     "gunzip-maybe": "^1.4.2",
     "nnng": "^1.0.0",
     "p-retry": "^4.2.0",
+    "p-timeout": "^3.2.0",
     "pretty-ms": "^7.0.0",
     "rm-rf-async": "^1.2.0",
     "workerpool": "^6.0.0"
