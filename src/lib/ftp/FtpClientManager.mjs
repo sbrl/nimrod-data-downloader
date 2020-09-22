@@ -5,6 +5,9 @@ import url from 'url';
 import p_retry from 'p-retry';
 import p_timeout from 'p-timeout';
 
+import l from '../../helpers/Log.mjs';
+import a from '../../helpers/Ansi.mjs';
+
 import settings from '../../bootstrap/settings.mjs';
 import AsyncFtpClient from './AsyncFtpClient.mjs';
 import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
@@ -33,12 +36,16 @@ class FtpClientManager {
 		if(this.connect_obj == null)
 			throw new Error("Error: Can't reconnect when we haven't connected in the first place.");
 		
-		this.client.connectAsync(this.connect_obj);
+		await this.client.connectAsync(this.connect_obj);
+		l.log(`[FtpClientManager/do_connect] Connected to ${a.fgreen}${this.connect_obj.host}:${this.connect_obj.port} successfully`);
 	}
 	
 	async force_reconnect() {
+		l.warn(`[FtpClientManager] Commencing forceful reconnect.`);
 		this.client.destroy();
+		l.info(`[FtpClientManager/force_reconnect] Destroyed old connection`);
 		this.client = new AsyncFtpClient();
+		l.info(`[FtpClientManager/force_reconnect] Created new connection`);
 		await this.do_connect();
 	}
 	

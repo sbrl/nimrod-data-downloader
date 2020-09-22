@@ -96,7 +96,9 @@ class ParallelDownloader {
 					);
 				}, {
 					retries: settings.config.ftp.retries,
-					maxRetryTime: settings.config.ftp.download_timeout * 1000,
+					// Multiple retry systems cause issues, apparently
+					// This one caused an error that wasn't caught
+					// maxRetryTime: settings.config.ftp.download_timeout * 1000,
 					onFailedAttempt: async (error) => {
 						await this.ftp.force_reconnect();
 						await wrapper_failure_handler(error);
