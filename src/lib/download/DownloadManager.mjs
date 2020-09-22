@@ -57,7 +57,6 @@ class DownloadManager extends EventEmitter {
 			settings.config.ftp.username,
 			settings.config.ftp.password
 		);
-		l.log(`Connected`);
 		
 		// 2: Filename iterator
 		this.filename_iterator = new FilenameIterator(this.ftp);
