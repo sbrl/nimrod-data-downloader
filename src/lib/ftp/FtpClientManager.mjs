@@ -14,8 +14,18 @@ import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
 
 class FtpClientManager {
 	constructor() {
-		this.client = new AsyncFtpClient();
+		this.client = null;
 		this.connect_obj = null;
+		
+		this._make_new_client();
+	}
+	
+	_make_new_client() {
+		this.client = new AsyncFtpClient();
+		this.client.on("error", (error) => {
+			l.error(`[FtpClientManager] Caught error from client, force-reconnecting:`, error);
+			this.force_reconnect();
+		})
 	}
 	
 	async connect(ftp_url, user, password) {
