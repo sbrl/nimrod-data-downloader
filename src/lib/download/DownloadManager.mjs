@@ -203,7 +203,15 @@ class DownloadManager extends EventEmitter {
 		// Push it onto the queue
 		this.queue_tar.push(wrapper);
 		// Hacky way to keep track of the promise - essentially set-and-forget in this case
-		wrapper._promise = wrapper.run();
+		wrapper._promise = (async () => {
+			try {
+				await wrapper.run();
+			} catch(error) {
+				l.error(`[DownloadManager] Caught error from PromiseWrapper: `, error);
+				// Check the queue to handle any errors
+				this.queue_tar_check();
+			}
+		})();
 		
 		this.emit("tar_start");
 	}

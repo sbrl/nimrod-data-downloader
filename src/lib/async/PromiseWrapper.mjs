@@ -89,7 +89,8 @@ class PromiseWrapper extends EventEmitter {
 					let wrapped = new ErrorWrapper(`[PromiseWrapper] Error: Promise rejected with an error.`, error);
 					this.status = "failed";
 					this.error = wrapped;
-					this.emit("error", wrapped);
+					// We don't want to emit an error event here, because we're already calling reject()
+					// this.emit("error", wrapped);
 					reject(wrapped);
 				});
 		});
