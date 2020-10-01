@@ -15,6 +15,7 @@ import l from '../../helpers/Log.mjs';
 
 import FtpClientManager from '../ftp/FtpClientManager.mjs';
 import PromiseWrapper from '../async/PromiseWrapper.mjs';
+import { ErrorWrapper } from '../Errors.mjs';
 
 import FilenameIterator from '../ftp/FilenameIterator.mjs';
 import ParallelDownloader from '../ftp/ParallelDownloader.mjs';
