@@ -3,6 +3,11 @@
 import EventEmitter from 'events';
 import child_process from 'child_process';
 
+/**
+ * Spawns and manages a gzip child process.
+ * @deprecated Use spawn-stream instead
+ * @extends EventEmitter
+ */
 class GzipChildProcess extends EventEmitter {
 	get stdin() { return this.child_process.stdin; }
 	get stdout() { return this.child_process.stdout; }
