@@ -4,10 +4,11 @@ import fs from 'fs';
 import path from 'path';
 
 import rmrf from 'rm-rf-async';
+import SpawnStream from 'spawn-stream';
 
 import DatFileParser from './DatFileParser.mjs';
 import { untar } from '../child_process/tar.mjs';
-import GzipChildProcess from '../child_process/GzipChildProcess.mjs';
+// import GzipChildProcess from '../child_process/GzipChildProcess.mjs';
 import { end_safe } from '../../helpers/StreamHelpers.mjs';
 
 import l from '../../helpers/Log.mjs';
@@ -45,15 +46,15 @@ class TarFileParser {
 		
 		// 4: Setup output stream
 		let out_disk = fs.createWriteStream(target);
-		let gzip = new GzipChildProcess();
-		gzip.stdout.pipe(out_disk);
+		let gzip = SpawnStream("gzip");
+		gzip.pipe(out_disk);
 		
 		// 5: Parse the inner files
 		for(let filename of filenames) {
 			try {
 				await this.datfileparser.parse_file(
 					path.join(tmpdir, filename),
-					gzip.stdin,
+					gzip,
 					bounds
 				);
 			} catch(error) {
@@ -62,9 +63,8 @@ class TarFileParser {
 			}
 		}
 		
-		// 6: Cleanup the output streams
-		await end_safe(gzip.stdin);	// gzip stdin
-		await gzip.wait_for_exit(); // wait for gzip to finish up
+		// 6: #Cleanup the output streams
+		await end_safe(gzip);	// gzip stdin
 		await end_safe(out_disk); // close the writeable stream that pushes data to disk 
 		
 		// 7: Delete the temporary directory
