@@ -4,6 +4,7 @@ import fs from 'fs';
 
 import settings from '../../bootstrap/settings.mjs';
 import l from '../../helpers/Log.mjs';
+import a from '../../helpers/Ansi.mjs';
 
 import DownloadManager from '../../lib/download/DownloadManager.mjs';
 
@@ -83,4 +84,9 @@ export default async function() {
 	// 3: Run
 	await download_manager.setup();
 	await download_manager.run();
+	
+	l.log(`Download complete!`);
+	l.log(`Files downloaded to ${a.fgreen}${a.hicol}${settings.config.output}${a.reset}`);
+	l.log(`Please cd to the above directory and run the ${a.fgreen}${a.hicol}postprocess.sh${a.reset} script that has been written to that directory to finalise the download.`);
+	process.exit();
 }

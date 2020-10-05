@@ -45,6 +45,22 @@ class AsyncFtpClient extends FtpClient {
 			this.connect(obj);
 		});
 	}
+	
+	/**
+	 * Closes the connection to the server gracefully.
+	 * @return	{Promise}	A Promise that resolves once the connection has been closed gracefully.
+	 */
+	endAsync() {
+		return new Promise((resolve, reject) => {
+			this.once("error", reject);
+			this.once("end", () => {
+				this.off("error", reject);
+				resolve(this);
+			});
+			
+			this.end();
+		});
+	}
 }
 // 
 // class AsyncFtpClient extends FtpClient {

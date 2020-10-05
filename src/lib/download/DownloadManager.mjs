@@ -152,6 +152,14 @@ class DownloadManager extends EventEmitter {
 			
 			i++;
 		}
+		
+		if(this.queue_tar.length > 0) {
+			l.log(`[DownloadManager] Waiting for all jobs to finish....`);
+			await Promise.all(this.queue_tar.map((wrapper) => wrapper._promise));
+			l.log(`[DownloadManager] All jobs finished: thank you :D`);
+		}
+		
+		await this.ftp.disconnect();
 	}
 	
 	queue_tar_check() {

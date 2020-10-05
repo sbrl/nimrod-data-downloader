@@ -28,6 +28,13 @@ class FtpClientManager {
 		})
 	}
 	
+	/**
+	 * Establishes a connection to the remote ftp server with the given details.
+	 * @param	{string}	ftp_url		The URL of the FTP server. Note that it MUST include the port number.
+	 * @param	{string}	user		The username to login with.
+	 * @param	{string}	password	The password to login with.
+	 * @return	{Promise}	A Promimse that resolves once the connection has been established.
+	 */
 	async connect(ftp_url, user, password) {
 		let url_parsed = url.parse(ftp_url);
 		console.log(`[AsyncFtpClient] host`, url_parsed.hostname, `port`, parseInt(url_parsed.port, 10));
@@ -42,12 +49,27 @@ class FtpClientManager {
 		await this.do_connect();
 	}
 	
+	/**
+	 * Connects the client to the remote FTP server using the stored connection
+	 * object that was constructed previously.
+	 * @return	{Promise}	A Promise that resolves once the connection to the remote server has been established.
+	 */
 	async do_connect() {
 		if(this.connect_obj == null)
 			throw new Error("Error: Can't reconnect when we haven't connected in the first place.");
 		
 		await this.client.connectAsync(this.connect_obj);
 		l.log(`[FtpClientManager/do_connect] Connected to ${a.fgreen}${this.connect_obj.host}:${this.connect_obj.port} successfully`);
+	}
+	
+	/**
+	 * Disconnects the ftp client from the remote server gracefully.
+	 * @return	{Promise}	A Promise that resolves once the connection has been closed.
+	 */
+	async disconnect() {
+		l.log(`[FtpClientManager] Disconnecting from remote server`);
+		await this.client.endAsync();
+		l.log(`[FtpClientManager] Disconnect operation successful`);
 	}
 	
 	async force_reconnect() {
