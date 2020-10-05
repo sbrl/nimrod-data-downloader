@@ -33,7 +33,6 @@
     "p-timeout": "^3.2.0",
     "pretty-ms": "^7.0.0",
     "rm-rf-async": "^1.2.0",
-    "spawn-stream": "^1.0.2",
     "workerpool": "^6.0.0"
   },
   "devDependencies": {
