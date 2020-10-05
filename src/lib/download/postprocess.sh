@@ -6,5 +6,6 @@ if [[ ! -d "./results" ]]; then
 	echo "Error: Directory at './results' does not exist." >&2;
 	exit 1;
 fi
+cd "./results" || { echo "Failed to cd into results subdirectory"; exit 1; };
 
-find "./results" -type f -name "*.gz" -printf "%f\n" | sort -n | xargs --verbose -n1 gzip -dc | gzip >"nimrod_ceda.jsonstream.gz";
+find . -type f -name "*.gz" -printf "%f\n" | sort -n | xargs --verbose -n1 gzip -dc | gzip >"../nimrod_ceda.jsonstream.gz";
