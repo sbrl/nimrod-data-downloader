@@ -8,7 +8,7 @@ import SpawnStream from 'spawn-stream';
 
 import DatFileParser from './DatFileParser.mjs';
 import { untar } from '../child_process/tar.mjs';
-// import GzipChildProcess from '../child_process/GzipChildProcess.mjs';
+import GzipChildProcess from '../child_process/GzipChildProcess.mjs';
 import { end_safe } from '../../helpers/StreamHelpers.mjs';
 
 import l from '../../helpers/Log.mjs';
@@ -46,8 +46,10 @@ class TarFileParser {
 		
 		// 4: Setup output stream
 		let out_disk = fs.createWriteStream(target);
-		let gzip = SpawnStream("gzip");
-		gzip.pipe(out_disk);
+		let gzip = new GzipChildProcess();
+		// let gzip = SpawnStream("gzip");
+		// gzip.pipe(out_disk);
+		gzip.stdout.pipe(out_disk);
 		
 		// 5: Parse the inner files
 		for(let filename of filenames) {
@@ -64,7 +66,8 @@ class TarFileParser {
 		}
 		
 		// 6: #Cleanup the output streams
-		await end_safe(gzip);	// gzip stdin
+		// await end_safe(gzip);	// gzip stdin
+		await gzip.end_gracefully();
 		await end_safe(out_disk); // close the writeable stream that pushes data to disk 
 		
 		// 7: Delete the temporary directory

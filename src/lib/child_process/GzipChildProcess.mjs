@@ -2,6 +2,7 @@
 
 import EventEmitter from 'events';
 import child_process from 'child_process';
+import { end_safe } from '../../helpers/StreamHelpers.mjs';
 
 /**
  * Spawns and manages a gzip child process.
@@ -50,7 +51,8 @@ class GzipChildProcess extends EventEmitter {
 	 * If the gzip child process has already exited, then it resolves immediately.
 	 * @return	{Promise}
 	 */
-	async wait_for_exit() {
+	async end_gracefully() {
+		await end_safe(this.stdin);
 		if(this.has_exited) return;
 		await EventEmitter.once(this, "exit");
 	}
