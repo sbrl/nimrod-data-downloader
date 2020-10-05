@@ -75,6 +75,10 @@ export default async function() {
 	
 	let actions_meta = await get_actions_metadata();
 	for(let action in actions_meta) {
+		// Hide disabled commands
+		if(actions_meta[action].disabled == true)
+			continue;
+		
 		let subcommand = cli.subcommand(action, actions_meta[action].description);
 		if(!(actions_meta[action].arguments instanceof Array))
 			continue;

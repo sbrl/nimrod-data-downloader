@@ -1,4 +1,5 @@
 description = "[CRASHES] Express the bounds of the given file in GeoJSON."
+disabled = true
 
 [[arguments]]
 name = "input"
