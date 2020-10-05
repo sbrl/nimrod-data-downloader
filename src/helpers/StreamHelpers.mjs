@@ -46,10 +46,10 @@ function write_safe(stream_out, data) {
  * @param  {Buffer|string} [chunk=undefined] Optional. A chunk to write when calling .end().
  * @return {Promise}                   A Promise that resolves when writing is complete.
  */
-function end_safe(stream, chunk = undefined) {
+function end_safe(stream) {
 	return new Promise((resolve, _reject) => {
-		if(typeof chunk == "undefined") stream.end(resolve);
-		else stream.end(chunk, resolve);
+		stream.once("finish", resolve);
+		stream.end();
 	});
 }
 
