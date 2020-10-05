@@ -56,7 +56,7 @@ class TarFileParser {
 			try {
 				await this.datfileparser.parse_file(
 					path.join(tmpdir, filename),
-					gzip,
+					gzip.stdin,
 					bounds
 				);
 			} catch(error) {
