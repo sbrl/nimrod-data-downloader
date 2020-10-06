@@ -48,6 +48,8 @@ function write_safe(stream_out, data) {
  */
 function end_safe(stream) {
 	return new Promise((resolve, _reject) => {
+		// Handle streams that have already been closed
+		if(stream.writableFinished) resolve();
 		stream.once("finish", resolve);
 		stream.end();
 	});
