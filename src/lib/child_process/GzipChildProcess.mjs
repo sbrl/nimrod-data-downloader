@@ -2,7 +2,9 @@
 
 import EventEmitter from 'events';
 import child_process from 'child_process';
+
 import { end_safe } from '../../helpers/StreamHelpers.mjs';
+import  l from '../../helpers/Log.mjs';
 
 /**
  * Spawns and manages a gzip child process.
@@ -17,9 +19,10 @@ class GzipChildProcess extends EventEmitter {
 	constructor(auto_start = true) {
 		super();
 		
+		this.debug = true;
 		this.child_process = null;
 		
-		this.has_exited = false;
+		this.has_ended = false;
 		
 		if(auto_start)
 			this.start();
@@ -35,9 +38,10 @@ class GzipChildProcess extends EventEmitter {
 				stdio: [ "pipe", "pipe", "inherit" ]
 			}
 		);
-		this.child_process.on("exit", () => {
-			this.has_exited = true;
-			this.emit("exit");
+		this.child_process.on("close", () => {
+			if(this.debug) l.debug("[GzipChildProcess] Close event triggered");
+			this.has_ended = true;
+			this.emit("close");
 		});
 		// FUTURE: Perhaps just throwing the error would be a better choice?
 		this.child_process.on("error", (error) => {
@@ -52,9 +56,23 @@ class GzipChildProcess extends EventEmitter {
 	 * @return	{Promise}
 	 */
 	async end_gracefully() {
-		await end_safe(this.stdin);
-		if(this.has_exited) return;
-		await EventEmitter.once(this, "exit");
+		if(this.debug) l.debug("[GzipChildProcess] end_gracefully called");
+		if(this.has_ended) {
+			if(this.debug) l.debug("[GzipChildProcess] It's been ended already - nothing to do");
+			return;
+		}
+		if(!this.stdin.writableFinished) {
+			if(this.debug) l.debug("[GzipChildProcess] Closing stdin");
+			await end_safe(this.stdin);
+			if(this.debug) l.debug("[GzipChildProcess] stdin closed successfully");
+		}
+		if(this.has_ended) {
+			if(this.debug) l.debug("[GzipChildProcess] It's been ended already - nothing to do");
+			return;
+		}
+		if(this.debug) l.debug("[GzipChildProcess] Waiting for close event");
+		await EventEmitter.once(this, "close");
+		if(this.debug) l.debug("[GzipChildProcess] Close event fired, our work is done");
 	}
 }
 
