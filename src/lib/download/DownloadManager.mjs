@@ -114,7 +114,7 @@ class DownloadManager extends EventEmitter {
 		if(settings.config.resume)
 			this.fileids_existing = (await fs.promises.readdir(this.results_dir)).map((filename) => parseInt(filename.match(/[0-9]+/)[0]));
 		
-		l.log(`Found ${files_existing.length} existsing files in the output directory`);
+		l.log(`Found ${this.fileids_existing.length} existsing files in the output directory`);
 		
 		return this.parallel_downloader.download_multiple(
 			this.filename_iterator.iterate.bind(
