@@ -31,7 +31,7 @@ class FilenameIterator {
 		return this.filename_blacklist.has(filename);
 	}
 	
-	async *iterate(remote_path) {
+	async *iterate(remote_path, skip_list = []) {
 		let year_dirs = (await this.ftp.list(remote_path))
 			.filter((obj) => obj.type == "d")
 			.map((obj) => obj.name);
@@ -56,6 +56,17 @@ class FilenameIterator {
 				let filename = filename_obj.name;
 				if(this.is_blacklisted(filename)) {
 					l.log(`[FilenameIterator] Skipping blacklisted filename ${a.hicol}${filename}${a.reset}`);
+					continue;
+				}
+				
+				let filename_date = filename_date.match(/[0-9]+/)[0];
+				if(typeof date != "string") {
+					l.warn(`[FilenameIterator] Warning: Failed to extract date for filename '${filename}', skipping`);
+					continue;
+				}
+				
+				if(skip_list.includes(filename_date)) {
+					l.log(`[DownloadManager] Filename with date ${filename_date} has been done already, skipping`);
 					continue;
 				}
 				

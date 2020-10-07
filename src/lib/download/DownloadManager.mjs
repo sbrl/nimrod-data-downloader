@@ -112,14 +112,15 @@ class DownloadManager extends EventEmitter {
 		
 		let ftp_path = url.parse(settings.config.ftp.url).pathname;
 		if(settings.config.resume)
-			this.fileids_existing = (await fs.promises.readdir(this.results_dir)).map((filename) => parseInt(filename.match(/[0-9]+/)[0]));
+			this.fileids_existing = (await fs.promises.readdir(this.results_dir)).map((filename) => filename.match(/[0-9]+/)[0]);
 		
 		l.log(`Found ${this.fileids_existing.length} existsing files in the output directory`);
 		
 		return this.parallel_downloader.download_multiple(
 			this.filename_iterator.iterate.bind(
 				this.filename_iterator,
-				ftp_path
+				ftp_path,
+				this.fileids_existing
 			),
 			tmp_dir
 		);
@@ -148,21 +149,15 @@ class DownloadManager extends EventEmitter {
 			fs.promises.mkdir(this.results_dir, { recursive: true })
 		]);
 		
-		let i = -1;
 		let downloader = await this.start_downloader();
 		for await (let tar_path_next of downloader) {
-			i++;
-			
-			if(this.fileids_existing.includes(i)) {
-				l.log(`[DownloadManager] Filename #${i} has been done already, skipping`);
-				continue;
-			}
+			let date = this.extract_date(tar_path_next);
 			
 			// l.log(`${a.fmagenta}[ParallelDownloader]${a.reset} Downloaded ${a.fmagenta}${a.hicol}${path.basename(tar_path_next)}${a.reset}`);
 			
 			let tmpdir = path.join(
 				this.main_parsing_tmpdir,
-				i.toString()
+				date
 			);
 			await fs.promises.mkdir(tmpdir);
 			
@@ -170,7 +165,7 @@ class DownloadManager extends EventEmitter {
 				tar_path_next,
 				path.join(
 					this.results_dir,
-					`${this.extract_date(tar_path_next)}.jsonstream.gz`
+					`${date}.jsonstream.gz`
 				),
 				settings.bounds,
 				tmpdir
