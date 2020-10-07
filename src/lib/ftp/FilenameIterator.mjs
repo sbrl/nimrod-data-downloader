@@ -31,7 +31,7 @@ class FilenameIterator {
 		return this.filename_blacklist.has(filename);
 	}
 	
-	async *iterate(remote_path, skip_count = 0) {
+	async *iterate(remote_path, skip_ids = []) {
 		let year_dirs = (await this.ftp.list(remote_path))
 			.filter((obj) => obj.type == "d")
 			.map((obj) => obj.name);
@@ -56,7 +56,10 @@ class FilenameIterator {
 			for(let filename_obj of files) {
 				i++;
 				
-				if(i < skip_count) continue;
+				if(skip_ids.includes(i)) {
+					l.log(`[FilenameIterator] Filename #${i} is present in the skip list, skipping`);
+					continue;
+				}
 				
 				let filename = filename_obj.name;
 				if(this.is_blacklisted(filename)) {

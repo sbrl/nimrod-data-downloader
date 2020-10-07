@@ -109,15 +109,17 @@ class DownloadManager extends EventEmitter {
 		await fs.promises.mkdir(tmp_dir);
 		
 		let ftp_path = url.parse(settings.config.ftp.url).pathname;
-		let count_files_existing = 0;
+		let files_existing = [];
 		if(settings.config.resume)
-			count_files_existing = (await fs.promises.readdir(this.results_dir)).length;
+			files_existing = (await fs.promises.readdir(this.results_dir)).map((filename) => parseInt(filename.match(/[0-9]+/)[0]));
+		
+		l.log(`Found ${files_existing.length} existsing files in the output directory`);
 		
 		return this.parallel_downloader.download_multiple(
 			this.filename_iterator.iterate.bind(
 				this.filename_iterator,
 				ftp_path,
-				count_files_existing
+				files_existing
 			),
 			tmp_dir
 		);
@@ -138,7 +140,11 @@ class DownloadManager extends EventEmitter {
 		await fs.promises.chmod(path.join(settings.config.output, "postprocess.sh"), 0o755);
 		
 		await Promise.all([
-			fs.promises.mkdir(this.main_parsing_tmpdir, { recursive: true }),
+			(async () => {
+				if(fs.existsSync(this.main_parsing_tmpdir))
+					await rmrf(this.main_parsing_tmpdir);
+				await fs.promises.mkdir(this.main_parsing_tmpdir, { recursive: true })
+			})(),
 			fs.promises.mkdir(this.results_dir, { recursive: true })
 		]);
 		
