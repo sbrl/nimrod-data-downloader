@@ -72,7 +72,6 @@ class ParallelDownloader {
 		let wrappers = [],
 			promises = [];
 		
-		let i = 0;
 		for await (let nextpath of generator()) {
 			if(wrappers.length > settings.config.ftp.parallel) {
 				let resolved_wrapper = await this.wait_for_completion(wrappers, promises);
@@ -81,7 +80,7 @@ class ParallelDownloader {
 			
 			let target = path.join(
 				target_dir,
-				`${i}-${path.basename(nextpath)}`
+				path.basename(nextpath)
 			);
 			
 			let wrapper_failure_handler = make_on_failure_handler(
@@ -109,8 +108,6 @@ class ParallelDownloader {
 			
 			wrappers.push(wrapper);
 			promises.push(wrapper.run());
-			
-			i++;
 		}
 	}
 	
