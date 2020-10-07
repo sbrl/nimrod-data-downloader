@@ -60,7 +60,7 @@ class FilenameIterator {
 				}
 				
 				let filename_date = filename.match(/[0-9]+/)[0];
-				if(typeof date != "string") {
+				if(typeof filename_date != "string") {
 					l.warn(`[FilenameIterator] Warning: Failed to extract date for filename '${filename}', skipping`);
 					continue;
 				}
