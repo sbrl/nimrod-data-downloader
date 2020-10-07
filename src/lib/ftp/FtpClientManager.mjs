@@ -7,6 +7,7 @@ import p_timeout from 'p-timeout';
 
 import l from '../../helpers/Log.mjs';
 import a from '../../helpers/Ansi.mjs';
+import pretty_ms from 'pretty-ms';
 
 import settings from '../../bootstrap/settings.mjs';
 import AsyncFtpClient from './AsyncFtpClient.mjs';
@@ -17,10 +18,13 @@ class FtpClientManager {
 		this.client = null;
 		this.connect_obj = null;
 		
+		this.reconnect_grace_period = 60 * 1000; // Don't reconnect more than once every minute
+		
 		this._make_new_client();
 	}
 	
 	_make_new_client() {
+		this.last_reconnect = +new Date();
 		this.client = new AsyncFtpClient();
 		this.client.on("error", (error) => {
 			l.error(`[FtpClientManager] Caught error from client, force-reconnecting:`, error);
@@ -72,8 +76,12 @@ class FtpClientManager {
 		l.log(`[FtpClientManager] Disconnect operation successful`);
 	}
 	
-	async force_reconnect() {
-		l.warn(`[FtpClientManager] Commencing forceful reconnect.`);
+	async force_reconnect(force = false) {
+		let time_since_last = new Date() - this.last_reconnect;
+		if(!force && time_since_last < this.reconnect_grace_period) {
+			l.warn(`[FtpClientManager] Forceful reconnect requested, but the last one was ${pretty_ms(time_since_last)} ago (grace period of ${pretty_ms(this.reconnect_grace_period)}) - refusing to reconnect again until the grace period expires`);
+		}
+		l.warn(`[FtpClientManager] Commencing forceful reconnect (last reconnect was ${pretty_ms(time_since_last)} ago).`);
 		this.client.destroy();
 		l.info(`[FtpClientManager/force_reconnect] Destroyed old connection`);
 		this.client = new AsyncFtpClient();
