@@ -101,7 +101,8 @@ class DownloadManager extends EventEmitter {
 			settings.config.output,
 			`__tmpdir_tarfiles_download`
 		);
-		await fs.promises.mkdir(tmp_dir);
+		if(!fs.existsSync(tmp_dir))
+			await fs.promises.mkdir(tmp_dir);
 		
 		let ftp_path = url.parse(settings.config.ftp.url).pathname;
 		let count_files_existing = 0;
