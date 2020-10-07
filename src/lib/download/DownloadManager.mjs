@@ -152,7 +152,7 @@ class DownloadManager extends EventEmitter {
 		let downloader = await this.start_downloader();
 		for await (let tar_path_next of downloader) {
 			let date = this.extract_date(tar_path_next);
-			console.log("[DEBUG] Extracted date", date);
+			console.log("[DEBUG] Extracted date", date, "from", tar_path_next);
 			
 			// l.log(`${a.fmagenta}[ParallelDownloader]${a.reset} Downloaded ${a.fmagenta}${a.hicol}${path.basename(tar_path_next)}${a.reset}`);
 			
