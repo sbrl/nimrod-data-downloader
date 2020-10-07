@@ -8,6 +8,7 @@ import path from 'path';
 
 import workerpool from 'workerpool';
 import pretty_ms from 'pretty-ms';
+import rmrf from 'rm-rf-async';
 
 import settings from '../../bootstrap/settings.mjs';
 import a from '../../helpers/Ansi.mjs';
@@ -101,8 +102,11 @@ class DownloadManager extends EventEmitter {
 			settings.config.output,
 			`__tmpdir_tarfiles_download`
 		);
-		if(!fs.existsSync(tmp_dir))
-			await fs.promises.mkdir(tmp_dir);
+		// Just in case there are some leftover files lying around
+		if(fs.existsSync(tmp_dir))
+			await rmrf(tmp_dir);
+		
+		await fs.promises.mkdir(tmp_dir);
 		
 		let ftp_path = url.parse(settings.config.ftp.url).pathname;
 		let count_files_existing = 0;
