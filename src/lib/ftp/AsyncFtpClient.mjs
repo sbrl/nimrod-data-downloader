@@ -48,14 +48,20 @@ class AsyncFtpClient extends FtpClient {
 	
 	/**
 	 * Closes the connection to the server gracefully.
+	 * @param	{Number}	timeout		If this many milliseconds pass while trying to end the connection gracefully, it will be neded forcefully instead.
 	 * @return	{Promise}	A Promise that resolves once the connection has been closed gracefully.
 	 */
-	endAsync() {
+	endAsync(timeout = 10000) {
 		return new Promise((resolve, reject) => {
+			let timeout_handle = setTimeout(() => {
+				this.destroy();
+				resolve("forceful");
+			}, timeout);
 			this.once("error", reject);
 			this.once("end", () => {
+				clearTimeout(timeout_handle);
 				this.off("error", reject);
-				resolve(this);
+				resolve("graceful");
 			});
 			
 			this.end();

@@ -82,7 +82,8 @@ class FtpClientManager {
 			l.warn(`[FtpClientManager] Forceful reconnect requested, but the last one was ${pretty_ms(time_since_last)} ago (grace period of ${pretty_ms(this.reconnect_grace_period)}) - refusing to reconnect again until the grace period expires`);
 		}
 		l.warn(`[FtpClientManager] Commencing forceful reconnect (last reconnect was ${pretty_ms(time_since_last)} ago).`);
-		this.client.destroy();
+		// Try to end the connection gracefully, but if it doesn't close after 10s then it's ended forcefully instead
+		await this.client.endAsync();
 		l.info(`[FtpClientManager/force_reconnect] Destroyed old connection`);
 		this.client = new AsyncFtpClient();
 		l.info(`[FtpClientManager/force_reconnect] Created new connection`);
