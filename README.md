@@ -250,5 +250,15 @@ The format of the data should be fairly easy to handle, but it's very important 
  - The content of the array-of-arrays `data` property is rotated by 90° clockwise. To fix this, the data must be transposed 90° **anti-**clockwise. See `docs/transpose.mjs` in this repository for an example of how this is done.
 
 
+## Contributing
+Contributions are welcome! If you've found a bug, please [open an issue](https://github.com/sbrl/nimrod-data-downloader/issues/new).
+
+Even better, please open a pull request :D
+
+Don't forget to mention in the pull request text that you release your contribution under the Mozilla Public License 2.0 though, because otherwise I will unfortunately be unable to accept your pull request.
+
+Please remember that that since the licence on the nimrod rainfall radar data is so restrictive, I may not have access to it when you open your issue or pull request. I expect to have access until August 2022 (which is when my PhD ends).
+
+
 ## Licence
 This program is released under the Mozilla Public License 2.0. The full license text is included in the `LICENSE` file in this repository. Tldr legal have a [great summary](https://tldrlegal.com/license/mozilla-public-license-2.0-(mpl-2)) of the license you should read.
