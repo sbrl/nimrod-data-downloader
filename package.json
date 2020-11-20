@@ -33,12 +33,13 @@
     "p-timeout": "^3.2.0",
     "pretty-ms": "^7.0.1",
     "rm-rf-async": "^1.2.0",
+    "terrain50": "^1.9.6",
     "workerpool": "^6.0.0"
   },
   "devDependencies": {
     "@types/gunzip-maybe": "^1.4.0"
   },
   "bin": {
-      "nimrod-data-downloader": "src/index.mjs"
+    "nimrod-data-downloader": "src/index.mjs"
   }
 }
