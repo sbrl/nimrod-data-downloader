@@ -20,3 +20,9 @@ name = "data-stdout"
 description = "If specified, the main data will be written to stdout instead of to a file. Saves disk space, but only compatible with a patched version of HAIL-CAESAR."
 type = "boolean"
 default_value = false
+
+[[arguments]]
+name = "dry-run"
+description = "Don't actually write any data to disk."
+type = "boolean"
+default_value = false

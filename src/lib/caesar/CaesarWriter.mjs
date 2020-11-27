@@ -67,7 +67,7 @@ class CaesarWriter {
 		this.first_line = JSON.parse(await this.reader.next());
 	}
 	
-	write_all() {
+	async write_all() {
 		await this.write_hydroindex();
 		await this.write_data();
 	}

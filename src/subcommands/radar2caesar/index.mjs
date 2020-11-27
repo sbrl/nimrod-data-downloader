@@ -4,6 +4,8 @@ import settings from '../../bootstrap/settings.mjs';
 import l from '../../helpers/Log.mjs';
 import a from '../../helpers/Ansi.mjs';
 
+import CaesarWriter from '../../lib/caesar/CaesarWriter.mjs';
+
 export default async function() {
 	if(typeof settings.cli.input !== "string") {
 		l.error("Error: No input directory specified (try --input path/to/nimrod_ceda.jsonl.gz)");
@@ -32,4 +34,14 @@ export default async function() {
 	else
 		l.log("Doing a live run!");
 	
+	
+	let writer = new CaesarWriter(settings.cli.dry_run);
+	await writer.init(
+		settings.cli.input,
+		settings.cli.heightmap,
+		settings.cli.output,
+		settings.cli.data_stdout
+	);
+	
+	await writer.write_all();
 }
