@@ -8,4 +8,4 @@ if [[ ! -d "./results" ]]; then
 fi
 cd "./results" || { echo "Failed to cd into results subdirectory"; exit 1; };
 
-find . -type f -name "*.gz" -printf "%f\n" | sort -n | xargs --verbose -n1 gzip -dc | gzip >"../nimrod_ceda.jsonstream.gz";
+find . -type f -name "*.gz" -printf "%f\n" | sort -n | xargs --verbose -n1 gzip -dc | gzip >"../nimrod_ceda.jsonl.gz";

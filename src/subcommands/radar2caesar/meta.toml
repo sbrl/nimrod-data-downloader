@@ -1,2 +1,22 @@
-# We haven't finished it yet
-disabled = true
+description = "Convert a previously downloaded compresssed jsonl file to a format that CAESAR-Lisflood understands"
+
+[[arguments]]
+name = "input"
+description = "The path to the input .jsonl.gz file"
+type = "string"
+
+[[arguments]]
+name = "output"
+description = "The path to the output directory to write the result to"
+type = "string"
+
+[[arguments]]
+name = "heightmap"
+description = "The path to the heightmap .asc file to use as a reference"
+type = "string"
+
+[[arguments]]
+name = "data-stdout"
+description = "If specified, the main data will be written to stdout instead of to a file. Saves disk space, but only compatible with a patched version of HAIL-CAESAR."
+type = "boolean"
+default_value = false

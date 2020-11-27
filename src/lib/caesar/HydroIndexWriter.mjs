@@ -12,8 +12,9 @@ import LowLevelWriter from '../../helpers/LowLevelWriter.mjs';
 class HydroIndexWriter {
 	/**
 	 * Creates a new HydroIndexWriter.
-	 * @param {PromiseWritable} stream_out The stream to write the hydro index file data to.
-	 * @param {Terrain50} heightmap  The heightmap, as a Terrain50 instance, to reference.
+	 * @param	{string}	filename	The filename to write to.
+	 * @param	{Terrain50}	heightmap	The heightmap, as a Terrain50 instance, to reference.
+	 * @param	{number}	cell_size	The cell size, in metres.
 	 */
 	constructor(filename, heightmap, cell_size) {
 		this.filename = filename;

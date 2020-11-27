@@ -165,7 +165,7 @@ class DownloadManager extends EventEmitter {
 				tar_path_next,
 				path.join(
 					this.results_dir,
-					`${date}.jsonstream.gz`
+					`${date}.jsonl.gz`
 				),
 				settings.bounds,
 				tmpdir

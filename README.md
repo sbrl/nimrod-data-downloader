@@ -133,9 +133,9 @@ cd path/to/output_directory;
 ./postprocess.sh
 ```
 
-This may take a few minutes to complete. Once done, a single `nimrod_ceda.jsonstream.gz` file will be generated.
+This may take a few minutes to complete. Once done, a single `nimrod_ceda.jsonl.gz` file will be generated.
 
-Once you have verified the existence of the `nimrod_ceda.jsonstream.gz` file, then everything else in the output directory can be safely deleted.
+Once you have verified the existence of the `nimrod_ceda.jsonl.gz` file, then everything else in the output directory can be safely deleted.
 
 
 ## File format
