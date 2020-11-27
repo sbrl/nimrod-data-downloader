@@ -4,6 +4,7 @@ import nnng from 'nnng';
 
 import Terrain50 from 'terrain50';
 
+import settings from '../../bootstrap/settings.mjs';
 import l from '../../helpers/Log.mjs';
 import LowLevelWriter from '../../helpers/LowLevelWriter.mjs';
 
@@ -14,10 +15,10 @@ class HydroIndexWriter {
 	 * @param {PromiseWritable} stream_out The stream to write the hydro index file data to.
 	 * @param {Terrain50} heightmap  The heightmap, as a Terrain50 instance, to reference.
 	 */
-	constructor(settings, filename, heightmap) {
-		this.settings = settings;
+	constructor(filename, heightmap, cell_size) {
 		this.filename = filename;
 		this.heightmap = heightmap;
+		this.cell_size = cell_size;
 		this.symbol_newline = Symbol("hydroindex_write_generator_newline");
 		
 		// Where to take the coordinates from
@@ -29,8 +30,8 @@ class HydroIndexWriter {
 		
 		let corner = nnng.to(
 			// HACK: According to the docs this is the wrong way around, but it appears to work this way and not the other way? I'm confused.
-			this.settings.radarcaesar.meta.bottom_left.latitude,
-			this.settings.radarcaesar.meta.bottom_left.longitude
+			settings.bounds.bottom_left.latitude,
+			settings.bounds.bottom_left.longitude
 		);
 		if(this.coords_mode == "heightmap") {
 			corner[0] = this.heightmap.meta.xllcorner;
@@ -38,10 +39,10 @@ class HydroIndexWriter {
 		}
 		
 		let scale_factor = Math.floor(
-			this.settings.radarcaesar.meta.cell_size_m / this.heightmap.meta.cellsize
+			this.cell_size / this.heightmap.meta.cellsize
 		);
 		
-		l.debug(`Corner:`, corner, `(from`, this.settings.radarcaesar.meta.bottom_left,`)`);
+		l.debug(`Corner:`, corner, `(from`, settings.bounds.bottom_left,`)`);
 		l.debug(`Scale factor:`, scale_factor)
 		
 		await this.stream_out.write(`ncols ${sample_obj.size_extract.height*scale_factor}\n`);
@@ -56,19 +57,14 @@ class HydroIndexWriter {
 		
 		let row = [];
 		// The width & height from are the wrong way around because the data itself is transposed awkwardly
-		// let newlines = 0;
 		for(let next of this.generate_indices(sample_obj.size_extract.height, sample_obj.size_extract.width, scale_factor)) {
 			if(next != this.symbol_newline)
 				row.push(next);
 			else {
 				await this.stream_out.write(row.join(" ") + `\n`);
-				// console.error(`Written line ${newlines}: ${row.length} items (first item: ${row[0]})`);
 				row.length = 0; // Clear the row out again now that we've flushed it to disk
-				// newlines++;
 			}
 		}
-		if(row.length !== 0)
-		// console.error(`[HydroIndexWriter] Written ${newlines} new lines in total`);
 		await this.stream_out.close();
 	}
 	
