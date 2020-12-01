@@ -11,12 +11,10 @@ class HydroIndexWriter {
 	 * Creates a new HydroIndexWriter.
 	 * @param	{string}	filename	The filename to write to.
 	 * @param	{Terrain50}	heightmap	The heightmap, as a Terrain50 instance, to reference.
-	 * @param	{number}	cell_size	The cell size, in metres.
 	 */
-	constructor(filename, heightmap, cell_size) {
+	constructor(filename, heightmap) {
 		this.filename = filename;
 		this.heightmap = heightmap;
-		this.cell_size = cell_size;
 		this.symbol_newline = Symbol("hydroindex_write_generator_newline");
 	}
 	
@@ -28,11 +26,12 @@ class HydroIndexWriter {
 		];
 		
 		let scale_factor = Math.floor(
-			this.cell_size / this.heightmap.meta.cellsize
+			this.heightmap.meta.cellsize / this.heightmap.meta.cellsize
 		);
 		
+		l.debug(`Heightmap meta:`, this.heightmap.meta);
 		l.debug(`Corner:`, corner);
-		l.debug(`Scale factor:`, scale_factor)
+		l.debug(`Scale factor:`, scale_factor, `(`, this.heightmap.meta.cellsize, "/", this.heightmap.meta.cellsize, `)`);
 		
 		await this.stream_out.write(`ncols ${sample_obj.size_extract.height*scale_factor}\n`);
 		await this.stream_out.write(`nrows ${sample_obj.size_extract.width*scale_factor}\n`);

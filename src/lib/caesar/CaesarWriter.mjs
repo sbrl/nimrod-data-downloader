@@ -106,7 +106,7 @@ class CaesarWriter {
 		for await(let obj of this.reader.iterate(this.filepath_nimrod)) {
 			if(count == 0)
 				await this.write_hydroindex(obj);
-			bytes_written_total += await write_line(obj);
+			bytes_written_total += await this.write_line(obj);
 			count++;
 			
 			l.log(`Written data for ${obj.timestamp.toISOString()}`);
