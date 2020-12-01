@@ -84,6 +84,7 @@ class RadarReader {
 					continue;
 				}
 			}
+			next.timestamp = new Date(next.timestamp);
 			// Transpose the data to correct our earlier mistake
 			next.data = transpose(next.data) // Correct the orientation of the data array
 			// Now, the data is in the format data[y][x]

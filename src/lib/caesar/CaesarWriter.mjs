@@ -69,7 +69,8 @@ class CaesarWriter {
 			
 			this.writer_hydro = new HydroIndexWriter(
 				path.join(this.dir_out, "hydroindex.asc"),
-				Terrain50.Parse(await fs.promises.readFile(this.filepath_heightmap, "utf-8"))
+				Terrain50.Parse(await fs.promises.readFile(this.filepath_heightmap, "utf-8")),
+				
 			);
 		}
 	}
