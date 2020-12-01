@@ -3,7 +3,7 @@
 import EventEmitter from 'events';
 import child_process from 'child_process';
 
-import { end_safe } from '../../helpers/StreamHelpers.mjs';
+import { end_safe } from '../io/StreamHelpers.mjs';
 import  l from '../../helpers/Log.mjs';
 
 /**

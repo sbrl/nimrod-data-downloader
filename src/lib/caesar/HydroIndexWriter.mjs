@@ -6,7 +6,7 @@ import Terrain50 from 'terrain50';
 
 import settings from '../../bootstrap/settings.mjs';
 import l from '../../helpers/Log.mjs';
-import LowLevelWriter from '../../helpers/LowLevelWriter.mjs';
+import LowLevelWriter from '../io/LowLevelWriter.mjs';
 
 
 class HydroIndexWriter {

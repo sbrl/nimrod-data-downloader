@@ -7,7 +7,7 @@ import NimrodParser from '../parser/NimrodParser.mjs';
 import extract_area from '../manip/ExtractArea.mjs';
 
 import { eat_stream_gunzip_maybe } from '../../helpers/EatStream.mjs';
-import { write_safe } from '../../helpers/StreamHelpers.mjs';
+import { write_safe } from '../io/StreamHelpers.mjs';
 import { ErrorWrapper } from '../Errors.mjs';
 
 

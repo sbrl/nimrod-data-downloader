@@ -2,7 +2,7 @@
 
 import Terrain50 from 'terrain50';
 
-import { write_safe, end_safe } from '../../helpers/StreamHelpers.mjs';
+import { write_safe, end_safe } from '../io/StreamHelpers.mjs';
 import { floor_precision } from '../../helpers/Maths.mjs';
 import l from '../../helpers/Log.mjs';
 
@@ -44,7 +44,7 @@ class CaesarWriter {
 		this.dir_out = dir_out;
 		
 		this.reader = new RadarReader();
-		this.reader.enable_interp_stats(path.join(this.dir_out, "interpolated_timestamps.txt"));
+		await this.reader.enable_interp_stats(path.join(this.dir_out, "interpolated_timestamps.txt"));
 		
 		if(!this.dry_run) {
 			if(!fs.existsSync(this.dir_out))

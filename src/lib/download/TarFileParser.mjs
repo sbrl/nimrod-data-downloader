@@ -9,7 +9,7 @@ import SpawnStream from 'spawn-stream';
 import DatFileParser from './DatFileParser.mjs';
 import { untar } from '../child_process/tar.mjs';
 import GzipChildProcess from '../child_process/GzipChildProcess.mjs';
-import { end_safe } from '../../helpers/StreamHelpers.mjs';
+import { end_safe } from '../io/StreamHelpers.mjs';
 
 import l from '../../helpers/Log.mjs';
 

@@ -8,9 +8,9 @@ import gunzip from 'gunzip-maybe';
 
 import l from '../helpers/Log.mjs';
 import interpolate from './2dmanip/interpolate.mjs';
-import transpose from '../2dmanip/transpose.mjs';
+import transpose from './2dmanip/transpose.mjs';
 
-import LowLevelWriter from '../../helpers/LowLevelWriter.mjs';
+import LowLevelWriter from './io/LowLevelWriter.mjs';
 
 /**
  * Reads data in order from a directory of .jsonstream.gz files.
@@ -27,7 +27,7 @@ class RadarReader {
 		this.writer_interp_stats = null;
 	}
 	
-	enable_interp_stats(dest_filepath) {
+	async enable_interp_stats(dest_filepath) {
 		this.writer_interp_stats = await LowLevelWriter.Open(
 			dest_filepath
 		);
@@ -90,7 +90,7 @@ class RadarReader {
 			
 			// Interpolate if needed
 			if(this.do_interpolate && prev !== null && next.timestamp - prev.timestamp > this.time_step_interval * 1000 * 1.5 * this.stride) {
-				for(let item of this.interpolate(prev, next)) {
+				for await(let item of this.interpolate(prev, next)) {
 					yield item;
 				}
 			}
@@ -109,7 +109,7 @@ class RadarReader {
 	 * @param	{Object}	b	The second object.
 	 * @return	{Generator<Object>}
 	 */
-	*interpolate(a, b) {
+	async *interpolate(a, b) {
 		let next_timestamp = new Date(a.timestamp); // This clones the existing Date object
 		
 		// Increment the time interval
