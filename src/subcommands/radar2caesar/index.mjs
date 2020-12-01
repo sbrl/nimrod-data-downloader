@@ -1,5 +1,7 @@
 "use strict";
 
+import fs from 'fs';
+
 import settings from '../../bootstrap/settings.mjs';
 import l from '../../helpers/Log.mjs';
 import a from '../../helpers/Ansi.mjs';
@@ -29,7 +31,7 @@ export default async function() {
 		process.exit(1);
 	}
 	
-	if(settings.radarcaesar.dry_run)
+	if(settings.cli.dry_run)
 		l.log("Doing a dry run.");
 	else
 		l.log("Doing a live run!");
@@ -43,5 +45,5 @@ export default async function() {
 		settings.cli.data_stdout
 	);
 	
-	await writer.write_all();
+	await writer.write();
 }

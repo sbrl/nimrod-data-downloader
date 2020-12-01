@@ -1,20 +1,30 @@
 "use strict";
 
+import fs from 'fs';
+import path from 'path';
+
 import Terrain50 from 'terrain50';
 
 import { write_safe, end_safe } from '../io/StreamHelpers.mjs';
 import { floor_precision } from '../../helpers/Maths.mjs';
 import l from '../../helpers/Log.mjs';
 
-
 import RadarReader from '../RadarReader.mjs';
 import HydroIndexWriter from './HydroIndexWriter.mjs';
 
+/**
+ * Converts nimrod_ceda.jsonl.gz files to something that
+ * CAESAR-Lisflood / HAIL-CAESAR understands.
+ */
 class CaesarWriter {
+	/**
+ 	 * Whether initialisation has been completed yet or not.
+	 * @return {boolean}
+	 */
 	get init_complete() {
-		return this.dir_out === null
-			&& this.filepath_nimrod === null
-			&& this.filepath_heightmap === null;
+		return this.dir_out !== null
+			&& this.filepath_nimrod !== null
+			&& this.filepath_heightmap !== null;
 	}
 	constructor(in_dry_run = false) {
 		this.dry_run = in_dry_run;
@@ -62,37 +72,40 @@ class CaesarWriter {
 				Terrain50.Parse(await fs.promises.readFile(this.filepath_heightmap, "utf-8"))
 			);
 		}
-		
-		// We need the first line here 'cause we need to infer the metadata
-		this.first_line = JSON.parse(await this.reader.next());
 	}
 	
-	async write_all() {
-		await this.write_hydroindex();
-		await this.write_data();
-	}
-	
-	async write_hydroindex() {
+	/**
+	 * Given a sample (parsed) JSON object as a reference, writes the hydro
+	 * index file to disk.
+	 * @param	{Object}	obj		The sample reference object to use.
+	 * @return	{Promise}	A promise that resolves when the hydro index file has been written to disk.
+	 */
+	async write_hydroindex(obj) {
 		if(!this.init_complete)
 			throw new Error("Error: Filepaths aren't yet specified (did you remember to call and await .init()?)");
 		
-		await this.writer_hydro.write(first_line);
-		console.log(`HydroIndexWriting complete`);
+		await this.writer_hydro.write(obj);
+		l.log(`HydroIndexWriting complete`);
 	}
 	
-	async write_data() {
+	/**
+	 * Writes the hydro index file and the data file to disk.
+	 * The data file may be written to the standard output instead, depending
+	 * on the initialisation options chosen.
+	 * @return	{Promise}	A Promise that resolves when the conversion process is complete.
+	 */
+	async write() {
 		if(!this.init_complete)
 			throw new Error("Error: Filepaths aren't yet specified (did you remember to call and await .init()?)");
 		
 		// Remember that the entire thing is actually rotated by 90 degrees here
 		
-		let bytes_written_total = await this.write_line(this.first_line);
-		
 		l.info("Beginning main data conversion.");
 		
-		this.first_line = null; // Free up memory later on by deleting the original variable reference
-		let count = 0;
+		let count = 0, bytes_written_total = 0;
 		for await(let obj of this.reader.iterate(this.filepath_nimrod)) {
+			if(count == 0)
+				await this.write_hydroindex(obj);
 			bytes_written_total += await write_line(obj);
 			count++;
 			
@@ -101,7 +114,7 @@ class CaesarWriter {
 		process.stderr.write("\n");
 		
 		// Explicitly close the streams
-		await this.writer_data.end();
+		await end_safe(this.writer_data);
 		
 		l.log("Done");
 		l.log(`Generated ${count} timesteps total (${bytes_written_total} bytes written)`);
