@@ -1,10 +1,7 @@
 "use strict";
 
-import nnng from 'nnng';
-
 import Terrain50 from 'terrain50';
 
-import settings from '../../bootstrap/settings.mjs';
 import l from '../../helpers/Log.mjs';
 import LowLevelWriter from '../io/LowLevelWriter.mjs';
 
@@ -21,29 +18,20 @@ class HydroIndexWriter {
 		this.heightmap = heightmap;
 		this.cell_size = cell_size;
 		this.symbol_newline = Symbol("hydroindex_write_generator_newline");
-		
-		// Where to take the coordinates from
-		this.coords_mode = "heightmap"; // Can also be "settings"
 	}
 	
 	async write(sample_obj) {
 		this.stream_out = await LowLevelWriter.Open(this.filename);
-		
-		let corner = nnng.to(
-			// HACK: According to the docs this is the wrong way around, but it appears to work this way and not the other way? I'm confused.
-			settings.bounds.bottom_left.latitude,
-			settings.bounds.bottom_left.longitude
-		);
-		if(this.coords_mode == "heightmap") {
-			corner[0] = this.heightmap.meta.xllcorner;
-			corner[1] = this.heightmap.meta.yllcorner;
-		}
+		let corner = [
+			this.heightmap.meta.xllcorner,
+			this.heightmap.meta.yllcorner
+		];
 		
 		let scale_factor = Math.floor(
 			this.cell_size / this.heightmap.meta.cellsize
 		);
 		
-		l.debug(`Corner:`, corner, `(from`, settings.bounds.bottom_left,`)`);
+		l.debug(`Corner:`, corner);
 		l.debug(`Scale factor:`, scale_factor)
 		
 		await this.stream_out.write(`ncols ${sample_obj.size_extract.height*scale_factor}\n`);
