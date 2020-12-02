@@ -13,7 +13,7 @@ import transpose from './2dmanip/transpose.mjs';
 import LowLevelWriter from './io/LowLevelWriter.mjs';
 
 /**
- * Reads data in order from a directory of .jsonstream.gz files.
+ * Reads data in order from a directory of .jsonl.gz files.
  * @param	{string}	in_stride		Return only every X objects. 1 = return every object. Default: 1
  * @param	{boolean}	do_interpolate	Whether to interpolate to fill in missing values.
  * @param	{number}	time_step_interval	The nominal interval, in seconds, between time steps (default: 300 seconds)
