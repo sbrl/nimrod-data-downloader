@@ -6,8 +6,11 @@ This package downloads **1km** NIMROD rainfall radar data (5km has not been test
 
 I implemented this as part of my PhD.
 
+ - **Current version:** ![current npm version - see the GitHub releases](https://img.shields.io/npm/v/nimrod-data-downloader)
+ - **Changelog:** <https://github.com/sbrl/nimrod-data-downloader/blob/master/Changelog.md>
 
-## System Requirements
+
+## System (and User) Requirements
  - Operating System: Linux is recommended (e.g. Ubuntu), Windows may work but is untested.
  - _Lots_ of disk space (extra space is needed to work in while downloading the data; heavy IO is performed too, so a fast disk will yield benefits)
  - As many CPU cores as you can manage (the process is really rather CPU intensive)
