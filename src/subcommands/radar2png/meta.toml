@@ -1,0 +1,16 @@
+description = "Convert a previously downloaded compresssed jsonl file to a directory of PNGs"
+
+[[arguments]]
+name = "input"
+description = "The path to the input .jsonl.gz file"
+type = "string"
+
+[[arguments]]
+name = "output"
+description = "The path to the output directory to write the result to"
+type = "string"
+
+[[arguments]]
+name = "heightmap"
+description = "The path to the heightmap .asc file to use"
+type = "string"
