@@ -19,7 +19,12 @@ class ImageWriter {
 		this.radar_val_max = 50;	// mm/hr; violent shower
 	}
 	
-	setup(path_heightmap) {
+	/**
+	 * Sets up this ImageWriter instance.
+	 * @param	{string}	path_heightmap	The path to the heightmap file to load.
+	 * @return	{Promise}	Promise that resolves when the setup is complete.
+	 */
+	async setup(path_heightmap) {
 		let heightmap = Terrain50.parse(
 			await fs.promises.readFile(path_heightmap, "utf-8")
 		);
