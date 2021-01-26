@@ -4,7 +4,7 @@ import fs from 'fs';
 
 import settings from '../../bootstrap/settings.mjs';
 import l from '../../helpers/Log.mjs';
-import a from '../../helpers/Ansi.mjs';
+// import a from '../../helpers/Ansi.mjs';
 
 import ImageWriter from '../../lib/img/ImageWriter.mjs';
 import RadarReader from '../../lib/RadarReader.mjs';
@@ -38,6 +38,6 @@ export default async function() {
 	let reader = new RadarReader();
 	let writer = new ImageWriter(settings.cli.output);
 	
-	await writer.setup(settigs.cli.heightmap);
+	await writer.setup(settings.cli.heightmap);
 	await writer.write(reader.iterate(settings.cli.input));
 }
