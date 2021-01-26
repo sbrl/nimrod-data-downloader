@@ -54,9 +54,9 @@ export default function(radar, heightmap) {
 		}
 	}
 	
-	return encode(buffer, {
+	return new Uint8ClampedArray(encode(buffer, {
 		width,
 		height,
 		format: "png"
-	});
+	}));
 }
