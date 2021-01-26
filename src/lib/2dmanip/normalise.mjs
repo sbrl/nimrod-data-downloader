@@ -15,7 +15,7 @@
  */
 export default function(arr, min, max, rescale_min, rescale_max, clamp = true, round = false) {
 	for(let y = arr.length - 1; y > 0; y--) {
-		for(let x = arr[y].length; x > 0; y--) {
+		for(let x = arr[y].length - 1; x > 0; y--) {
 			if(clamp)
 				arr[y][x] = Math.max(min, Math.min(arr[y][x], max));
 			
