@@ -2,6 +2,8 @@
 
 import is_big_endian from '../sys/is_big_endian.mjs';
 
+import encode from 'image-encode';
+
 /**
  * Makes a PNG image given the rainfall radar 2D array and the heightmap - also
  * as a 2D array.
@@ -11,7 +13,7 @@ import is_big_endian from '../sys/is_big_endian.mjs';
  * @param  {number[][]} heightmap The heightmap, also as a 2D array
  * @return {[type]}           [description]
  */
-export default async function(radar, heightmap) {
+export default function(radar, heightmap) {
 	if(radar.length !== heightmap.length || radar[0].length !== heightmap[0].length)
 		throw new Error(`Error: The width and height of the rainfall radar and heightmap data don't match! width = ${radar[0].length} / ${heightmap[0].length}; height = ${radar.length} / ${heightmap.length}`);
 	
