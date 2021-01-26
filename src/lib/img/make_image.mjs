@@ -15,7 +15,7 @@ import encode from 'image-encode';
  */
 export default function(radar, heightmap) {
 	if(radar.length !== heightmap.length || radar[0].length !== heightmap[0].length)
-		throw new Error(`Error: The width and height of the rainfall radar and heightmap data don't match! width = ${radar[0].length} / ${heightmap[0].length}; height = ${radar.length} / ${heightmap.length}`);
+		throw new Error(`The width and height of the rainfall radar (${radar[0].length} x ${radar.length}) and the heightmap data (${heightmap[0].length} x ${heightmap.length}) don't match!`);
 	
 	
 	let width = radar[0].length,
