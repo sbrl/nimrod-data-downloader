@@ -25,7 +25,7 @@ class ImageWriter {
 	 * @return	{Promise}	Promise that resolves when the setup is complete.
 	 */
 	async setup(path_heightmap) {
-		let heightmap = Terrain50.parse(
+		let heightmap = Terrain50.Parse(
 			await fs.promises.readFile(path_heightmap, "utf-8")
 		);
 		normalise(heightmap.data,
