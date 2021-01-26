@@ -29,7 +29,7 @@ class ImageWriter {
 			await fs.promises.readFile(path_heightmap, "utf-8")
 		);
 		normalise(heightmap.data,
-			heightmap.min_value, heightmap_max_value,
+			heightmap.min_value, heightmap.max_value,
 			0, 255,
 			true,	// Clamp out-of-bounds values
 			true	// Round to the nearest int
