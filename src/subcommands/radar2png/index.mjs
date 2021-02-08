@@ -11,7 +11,7 @@ import RadarReader from '../../lib/RadarReader.mjs';
 
 export default async function() {
 	if(typeof settings.cli.input !== "string") {
-		l.error("Error: No input directory specified (try --input path/to/nimrod_ceda.jsonl.gz)");
+		l.error("Error: No input filename specified (try --input path/to/nimrod_ceda.jsonl.gz)");
 		process.exit(1);
 	}
 	if(typeof settings.cli.output !== "string") {
@@ -29,7 +29,7 @@ export default async function() {
 		process.exit(1);
 	}
 	if(!fs.existsSync(settings.cli.input)) {
-		l.error(`Error: The input directory ${settings.cli.input} does not exist.`);
+		l.error(`Error: The input file ${settings.cli.input} does not exist.`);
 		process.exit(1);
 	}
 	if(!fs.existsSync(settings.cli.output))

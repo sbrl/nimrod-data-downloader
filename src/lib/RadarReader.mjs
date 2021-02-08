@@ -37,7 +37,7 @@ class RadarReader {
 	 * An async iterator that yields rainfall radar objects in order.
 	 * Note that for a single RadarReader object, this method may be called
 	 * multiple times - potentially in parallel.
-	 * @param	{string}				directory	The directory to read from.
+	 * @param	{string}				filename	The filename to read from.
 	 * @return	{Generator<Promise>}	The async generator.
 	 */
 	async *iterate(filename) {
