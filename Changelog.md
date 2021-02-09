@@ -13,6 +13,9 @@ npm install --global --save nimrod-data-downloader
 
 -----
 
+## v1.2 (unreleased)
+ - Added `radar2png` subcommand for converting input data to PNG images
+
 
 ## v1.1 (4th December 2020)
  - Added `radar2caesar` subcommand for converting data to a format that [CAESAR-Lisflood](https://sourceforge.net/projects/caesar-lisflood/) and [HAIL-CAESAR](https://github.com/dvalters/HAIL-CAESAR) understand

@@ -28,6 +28,7 @@ class ImageWriter {
 		let heightmap = Terrain50.Parse(
 			await fs.promises.readFile(path_heightmap, "utf-8")
 		);
+		l.info(`heightmap range: ${heightmap.min_value} - ${heightmap.max_value}`);
 		normalise(heightmap.data,
 			heightmap.min_value, heightmap.max_value,
 			0, 255,
