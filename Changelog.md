@@ -13,7 +13,7 @@ npm install --global --save nimrod-data-downloader
 
 -----
 
-## v1.2 (unreleased)
+## v1.2
  - Added `radar2png` subcommand for converting input data to PNG images
 
 
