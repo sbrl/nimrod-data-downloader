@@ -58,6 +58,7 @@ Subcommand      | Purpose                       | Link to tutorial
 ----------------|-------------------------------|----------------------------
 `download`      | Downloads the 1km rainfall radar data from the server | [`docs/usage-downloader.md`](https://github.com/sbrl/nimrod-data-downloader/blob/master/docs/usage-downloader.md)
 `radar2caesar`  | Converts downloaded data to a format that CAESAR-Lisflood understands. | [`docs/usage-radar2caesar.md`](https://github.com/sbrl/nimrod-data-downloader/blob/master/docs/usage-radar2caesar.md)
+`radar2png`		| Converts downloaded data into a series of timestamped PNG images | (coming soon)
 
 
 ## File format
