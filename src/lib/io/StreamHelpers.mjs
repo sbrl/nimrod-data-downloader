@@ -1,4 +1,20 @@
 "use strict";
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+/*
+ * A pair of functions to make writing to streams in Node.js less painful.
+ * I've used these in a number of different projects so far, and they both
+ * *appear* to be stable.
+ * @licence	MPL-2.0
+ * 
+ * Changelog
+ *********************************
+ * 22nd March 2021
+	* We should have brought this into our code snippet library *ages* ago lol :P
+ */
+
 
 /**
  * Writes data to a stream, automatically waiting for the drain event if asked.
