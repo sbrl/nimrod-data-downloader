@@ -9,6 +9,8 @@ import a from '../../helpers/Ansi.mjs';
 import DownloadManager from '../../lib/download/DownloadManager.mjs';
 
 export default async function() {
+	if(settings.cli.output) settings.config.output = settings.cli.output;
+	
 	// 1: Validation
 	if(typeof process.env.NIMROD_CEDA_USER !== "string" && settings.config.ftp.username == "CHANGE_ME") {
 		l.error(`Error: The environment variable NIMROD_CEDA_USER is not set.`);

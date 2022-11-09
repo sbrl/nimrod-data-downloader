@@ -5,3 +5,8 @@ name = "blacklist-file"
 description = "The full name (but not the path) of a file on the server add to the blacklist and to ignore. May be specified multiple times."
 type = "string_multi"
 default_value = []
+
+[[arguments]]
+name = "output"
+description = "Path to the dir to save downloaded & parsed rainfall radar data."
+type = "string"
