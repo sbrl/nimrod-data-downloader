@@ -86,25 +86,5 @@ export default function(bounds_extract, file) {
 	if(!(timestamp instanceof Date))
 		timestamp = new Date(timestamp);
 	
-	return {
-		data: result,
-		
-		timestamp,
-		timestamps: [
-			file.header.time_data,
-			file.header.time_validity
-		],
-		size_full: arr_size,
-		size_extract: {
-			width: result[0].length,
-			height: result.length
-		},
-		
-		bounds_full,
-		bounds_extract,
-		bounds_extract_array: { start, end },
-		
-		count_total: arr_size.width * arr_size.height,
-		count_extract: count
-	};
+	return result;
 }

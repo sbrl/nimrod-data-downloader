@@ -9,6 +9,7 @@ import extract_area from '../manip/ExtractArea.mjs';
 import { eat_stream_gunzip_maybe } from '../../helpers/EatStream.mjs';
 import { write_safe } from '../io/StreamHelpers.mjs';
 import { ErrorWrapper } from '../Errors.mjs';
+import make_radar_obj from '../manip/make_radar_obj.mjs';
 
 
 class DatFileParser {
@@ -25,8 +26,8 @@ class DatFileParser {
 	 */
 	async parse_file(filepath, stream_out, bounds) {
 		// 1: Read in the file
-		let buffer = await this.read_all_data(filepath),
-			obj = null;
+		let buffer = await this.read_all_data(filepath);
+		let obj = null;
 		
 		// 2: Parse the file
 		try {
@@ -38,13 +39,19 @@ class DatFileParser {
 			throw new Error(`Error: Binary file parser returned null`);
 		
 		// 3: Area extraction and simplification
-		try {
-			obj = extract_area(bounds, obj);
-		} catch(error) {
-			throw new ErrorWrapper(`Error: Failed to extract an area from the parsed file object`, error);
+		let data = file.data_array;
+		if(bounds !== null) {
+			try {
+				data = extract_area(bounds, obj);
+			} catch(error) {
+				throw new ErrorWrapper(`Error: Failed to extract an area from the parsed file object`, error);
+			}
 		}
 		
-		// 4: Write to the output stream
+		// 4: Make (simplified) object
+		obj = make_radar_obj(file, data, bounds);
+		
+		// 5: Write to the output stream
 		await this.write_json(obj, stream_out);
 	}
 	
