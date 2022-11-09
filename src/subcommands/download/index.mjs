@@ -21,29 +21,39 @@ export default async function() {
 		process.exit(1);
 	}
 	// Validate the bounding box that we want to extract
-	if(typeof settings.bounds.top_left == "undefined") {
+	if(typeof settings.bounds == "undefined" || settings.bounds == null) {
 		l.warn(`Warning: The latitude and longitude for the top-left corner of the bounds are not specified, so no area extraction will be performed.`);
 		settings.bounds = null;
 	}
-	if(typeof settings.bounds.bottom_right == "undefined") {
-		l.warn(`Warning: The latitude and longitude for the bottom-right corner of the bounds are not specified, so no area extraction will be performed.`);
-		settings.bounds = null;
-	}
-	if(settings.bounds.top_left.latitude == null) {
-		l.warn(`Warning: The latitude for the top-left corner of the bounds is null, so no area extraction will be performed.`);
-		settings.bounds = null;
-	}
-	if(settings.bounds.top_left.longitude == null) {
-		l.warn(`Warning: The longitude for the top-left corner of the bounds is null, so no area extraction will be performed.`);
-		settings.bounds = null;
-	}
-	if(settings.bounds.bottom_right.latitude == null) {
-		l.warn(`Warning: The latitude for the bottom-right corner of the bounds is null, so no area extraction will be performed.`);
-		settings.bounds = null;
-	}
-	if(settings.bounds.bottom_right.longitude == null) {
-		l.warn(`Warning: The longitude for the bottom-right corner of the bounds is null, so no area extraction will be performed.`);
-		settings.bounds = null;
+	if(settings.bounds) {
+		if(typeof settings.bounds.top_left == "undefined") {
+			l.warn(`Warning: The latitude and longitude for the top-left corner of the bounds are not specified, so no area extraction will be performed.`);
+			settings.bounds = null;
+		}
+		else {
+			if(settings.bounds.top_left.latitude == null) {
+				l.warn(`Warning: The latitude for the top-left corner of the bounds is null, so no area extraction will be performed.`);
+				settings.bounds = null;
+			}
+			if(settings.bounds.top_left.longitude == null) {
+				l.warn(`Warning: The longitude for the top-left corner of the bounds is null, so no area extraction will be performed.`);
+				settings.bounds = null;
+			}
+		}
+		if(typeof settings.bounds.bottom_right == "undefined") {
+			l.warn(`Warning: The latitude and longitude for the bottom-right corner of the bounds are not specified, so no area extraction will be performed.`);
+			settings.bounds = null;
+		}
+		else {
+			if(settings.bounds.bottom_right.latitude == null) {
+				l.warn(`Warning: The latitude for the bottom-right corner of the bounds is null, so no area extraction will be performed.`);
+				settings.bounds = null;
+			}
+			if(settings.bounds.bottom_right.longitude == null) {
+				l.warn(`Warning: The longitude for the bottom-right corner of the bounds is null, so no area extraction will be performed.`);
+				settings.bounds = null;
+			}
+		}
 	}
 	
 	// Validate the other settings
