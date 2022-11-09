@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#SBATCH -J nimrodDL
+#SBATCH -N 1
+#SBATCH -n 8
+#SBATCH -o %j.%N.%a.nimrod-download.out.log
+#SBATCH -e %j.%N.%a.nimrod-download.err.log
+#SBATCH -p gpu
+#SBATCH --time=5-00:00:00
+
+CONFIG="${INPUT:-$HOME/repos/nimrod-data-downloader/settings-min.custom.toml}";
+OUTPUT="${OUTPUT:-$HOME/data/nimrod-all}";
+
+if [[ -z "${CONFIG}" ]]; then
+	echo "Error: No config file specified in the CONFIG environment variable.";
+	exit 1;
+fi
+if [[ -z "${OUTPUT}" ]]; then
+	echo "Error: No output directory specified in the OUTPUT environment variable.";
+	exit 2;
+fi
+if [[ ! -r "${CONFIG}" ]]; then
+	echo "Error: That config file either doesn't exist or we don't have permission to access it.";
+	exit 3;
+fi
+
+if [[ ! -d "${OUTPUT}" ]]; then
+	echo "Creating output directory '${OUTPUT}'";
+	mkdir -p "${OUTPUT}";
+fi
+
+export PATH=$HOME/software/bin:$PATH;
+
+echo ">>> Settings";
+
+echo "INPUT $INPUT";
+
+echo ">>> Installing dependencies";
+npm install;
+echo ">>> Downloading data";
+/usr/bin/env time -v src/index.mjs download --verbose --config "${CONFIG}" --output "${OUTPUT}";
+echo ">>> exited with code $?";
