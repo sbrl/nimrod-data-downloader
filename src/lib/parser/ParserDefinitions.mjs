@@ -1,13 +1,13 @@
 "use strict";
 
-import BinaryParser from 'binary-parser';
+import { Parser as BinaryParser } from 'binary-parser';
 
 /**
  * Generates a parser for the header of the Nimrod composite file format.
  * @return {BinaryParser.Parser} The generated parser.
  */
 function parser_head() {
-	return new BinaryParser.Parser()
+	return new BinaryParser()
 		.endianess("big")
 		.array("arr_int16_a", {
 			type: "int16be",
@@ -32,7 +32,7 @@ function parser_head() {
 
 /**
  * Generates a parser for the body of the Nimrod composite file format.
- * Caution: This requires that an existing parsed file si passed to determine 
+ * Caution: This requires that an existing parsed file is passed to determine 
  * both the data type to parse as from the headers, and the length & structure
  * of the data in question.
  * @param	{Object}	file		The parsed file to generate the parser for.
@@ -40,7 +40,7 @@ function parser_head() {
  */
 function parser_body(file) {
 	let datatype = `int${file.header.data_length_bytes * 8}be`;
-	return new BinaryParser.Parser()
+	return new BinaryParser()
 		.endianess("big")
 		.array("dataset", {
 			type: datatype,
@@ -53,7 +53,7 @@ function parser_body(file) {
  * @return {BinaryParser.Parser} The generated parser.
  */
 function parser() {
-	let parser = new BinaryParser.Parser()
+	let parser = new BinaryParser()
 		.endianess("big")
 		.uint32("header_size", { assert: 512 })
 		.nest("header", { type: parser_head() })
