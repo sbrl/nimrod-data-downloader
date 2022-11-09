@@ -39,7 +39,7 @@ class DatFileParser {
 			throw new Error(`Error: Binary file parser returned null`);
 		
 		// 3: Area extraction and simplification
-		let data = file.data_array;
+		let data = obj.data_array;
 		if(bounds !== null) {
 			try {
 				data = extract_area(bounds, obj);
