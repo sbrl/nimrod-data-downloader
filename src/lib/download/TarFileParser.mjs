@@ -4,7 +4,6 @@ import fs from 'fs';
 import path from 'path';
 
 import rmrf from 'rm-rf-async';
-import SpawnStream from 'spawn-stream';
 
 import DatFileParser from './DatFileParser.mjs';
 import { untar } from '../child_process/tar.mjs';
@@ -15,7 +14,7 @@ import l from '../../helpers/Log.mjs';
 
 class TarFileParser {
 	constructor() {
-		this.datfileparser = new DatFileParser();
+		this.dat_file_parser = new DatFileParser();
 	}
 	
 	/**
@@ -54,7 +53,7 @@ class TarFileParser {
 		// 5: Parse the inner files
 		for(let filename of filenames) {
 			try {
-				await this.datfileparser.parse_file(
+				await this.dat_file_parser.parse_file(
 					path.join(tmpdir, filename),
 					gzip.stdin,
 					bounds
