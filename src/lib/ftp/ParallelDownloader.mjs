@@ -91,7 +91,7 @@ class ParallelDownloader {
 				return await p_retry(async () => {
 					return await p_timeout(
 						this.download_single(nextpath, target),
-						settings.config.ftp.download_timeout * 1000
+						{ milliseconds: settings.config.ftp.download_timeout * 1000 }
 					);
 				}, {
 					retries: settings.config.ftp.retries,

@@ -94,7 +94,7 @@ class FtpClientManager {
 		return await p_retry(async () => {
 				return await p_timeout(
 					this.client.listAsync(filepath),
-					settings.config.ftp.download_timeout * 1000
+					{ milliseconds: settings.config.ftp.download_timeout * 1000 }
 				);
 			}, {
 				retries: settings.config.ftp.retries,

@@ -2,13 +2,8 @@
 
 import path from 'path';
 
-import p_retry from 'p-retry';
-import p_timeout from 'p-timeout';
-
-import settings from '../../bootstrap/settings.mjs';
 import a from '../../helpers/Ansi.mjs';
 import l from '../../helpers/Log.mjs';
-import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
 
 
 class FilenameIterator {
