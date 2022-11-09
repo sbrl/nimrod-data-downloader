@@ -49,7 +49,7 @@ class DatFileParser {
 		}
 		
 		// 4: Make (simplified) object
-		obj = make_radar_obj(file, data, bounds);
+		obj = make_radar_obj(obj, data, bounds);
 		
 		// 5: Write to the output stream
 		await this.write_json(obj, stream_out);
