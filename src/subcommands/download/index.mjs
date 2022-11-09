@@ -20,26 +20,22 @@ export default async function() {
 	}
 	// Validate the bounding box that we want to extract
 	if(typeof settings.bounds.top_left == "undefined") {
-		l.error(`Error: The latitude and longitude for the top-left corner of the bounds are not specified.`);
+		l.warn(`Warning: The latitude and longitude for the top-left corner of the bounds are not specified, so no area extraction will be performed.`);
 	}
 	if(typeof settings.bounds.bottom_right == "undefined") {
-		l.error(`Error: The latitude and longitude for the bottom-right corner of the bounds are not specified.`);
+		l.warn(`Warning: The latitude and longitude for the bottom-right corner of the bounds are not specified, so no area extraction will be performed.`);
 	}
 	if(settings.bounds.top_left.latitude == null) {
-		l.error(`Error: The latitude for the top-left corner of the bounds is null.`);
-		process.exit(2);
+		l.warn(`Warning: The latitude for the top-left corner of the bounds is null, so no area extraction will be performed.`);
 	}
 	if(settings.bounds.top_left.longitude == null) {
-		l.error(`Error: The longitude for the top-left corner of the bounds is null.`);
-		process.exit(2);
+		l.warn(`Warning: The longitude for the top-left corner of the bounds is null, so no area extraction will be performed.`);
 	}
 	if(settings.bounds.bottom_right.latitude == null) {
-		l.error(`Error: The latitude for the bottom-right corner of the bounds is null.`);
-		process.exit(2);
+		l.warn(`Warning: The latitude for the bottom-right corner of the bounds is null, so no area extraction will be performed.`);
 	}
 	if(settings.bounds.bottom_right.longitude == null) {
-		l.error(`Error: The longitude for the bottom-right corner of the bounds is null.`);
-		process.exit(2);
+		l.warn(`Warning: The longitude for the bottom-right corner of the bounds is null, so no area extraction will be performed.`);
 	}
 	
 	// Validate the other settings

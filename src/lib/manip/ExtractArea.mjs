@@ -84,7 +84,7 @@ export default function(bounds_extract, file) {
 	
 	let timestamp = file.header.time_validity;
 	if(!(timestamp instanceof Date))
-		timestamp = new Date(obj.timestamp);
+		timestamp = new Date(timestamp);
 	
 	return {
 		data: result,

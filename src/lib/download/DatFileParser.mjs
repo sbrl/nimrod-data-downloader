@@ -21,6 +21,7 @@ class DatFileParser {
 	 * as a gzipped json object.
 	 * @param	{string}	filepath	The path to the file to parse.
 	 * @param	{Stream}	stream_out	The target stream to write the result to.
+	 * @param	{Object?}	bounds		An object defining the bounds of the region to extract. If null, then no extraction is performed.
 	 */
 	async parse_file(filepath, stream_out, bounds) {
 		// 1: Read in the file
@@ -36,7 +37,7 @@ class DatFileParser {
 		if(obj == null)
 			throw new Error(`Error: Binary file parser returned null`);
 		
-		// 3: Area extraction
+		// 3: Area extraction and simplification
 		try {
 			obj = extract_area(bounds, obj);
 		} catch(error) {

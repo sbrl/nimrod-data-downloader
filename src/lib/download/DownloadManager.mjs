@@ -114,7 +114,7 @@ class DownloadManager extends EventEmitter {
 		if(settings.config.resume)
 			this.fileids_existing = (await fs.promises.readdir(this.results_dir)).map((filename) => filename.match(/[0-9]+/)[0]);
 		
-		l.log(`Found ${this.fileids_existing.length} existsing files in the output directory`);
+		l.log(`Found ${this.fileids_existing.length} existing files in the output directory`);
 		
 		return this.parallel_downloader.download_multiple(
 			this.filename_iterator.iterate.bind(
@@ -184,7 +184,7 @@ class DownloadManager extends EventEmitter {
 	
 	queue_tar_check() {
 		for(let i in this.queue_tar) {
-			// It's finished! We shoudl do something about it.
+			// It's finished! We should do something about it.
 			if(this.queue_tar[i].is_finished) {
 				// Check if it failed
 				if(this.queue_tar[i].is_failed)
@@ -203,7 +203,7 @@ class DownloadManager extends EventEmitter {
 	 * Queues the parsing of a tar file on the workerpool.
 	 * @param	{string}	filepath	The path to the tar file to parse. Will be automatically deleted oncce parsing is complete.
 	 * @param	{string}	target		The path to the file to write the result to (as a gzipped stream of json objects)
-	 * @param	{Object}	bounds		The bounds of the data that should be extracted.
+	 * @param	{Object?}	bounds		The bounds of the data that should be extracted. If null, then no area extraction is performed.
 	 * @param	{string}	tmpdir		The path to an *empty* temporary directory to use during the parsing process. Will be deleted automatically once the parsing process is complete.
 	 * @return	{Promise}	A promise that resolves when the parsing process has *started* (note that the resolution of this Promise only indicates that the job has been successfully added to the queue, not that it has actually started yet).
 	 */
