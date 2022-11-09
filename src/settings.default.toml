@@ -36,6 +36,6 @@ blacklist = [
 
 [parsing]
 
-[parsing.bounds]
+# [parsing.bounds]
 	# top_left = 		{ latitude = -9999, longitude = -9999 }
 	# bottom_right =	{ latitude = -9999, longitude = -9999 }
