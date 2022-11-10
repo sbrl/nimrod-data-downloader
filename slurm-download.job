@@ -7,8 +7,14 @@
 #SBATCH -p ecompute
 #SBATCH --time=5-00:00:00
 
-CONFIG="${INPUT:-$HOME/repos/nimrod-data-downloader/settings-min.custom.toml}";
+CONFIG="${CONFIG:-$HOME/repos/nimrod-data-downloader/settings-min.custom.toml}";
 OUTPUT="${OUTPUT:-$HOME/data/nimrod-all}";
+
+echo ">>> Settings";
+
+echo "CONFIG $CONFIG";
+echo "OUTPUT $OUTPUT";
+
 
 if [[ -z "${CONFIG}" ]]; then
 	echo "Error: No config file specified in the CONFIG environment variable.";
@@ -30,9 +36,6 @@ fi
 
 export PATH=$HOME/software/bin:$PATH;
 
-echo ">>> Settings";
-
-echo "INPUT $INPUT";
 
 echo ">>> Installing dependencies";
 npm install;
