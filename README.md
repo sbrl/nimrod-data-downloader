@@ -137,6 +137,8 @@ It may be expected that these JSON objects are in chronological order. Here's an
 }
 ```
 
+**As of v1.3, the format has changed slightly. The new version is shown above. [See the old version here](https://github.com/sbrl/nimrod-data-downloader/tree/da38111d1e1cd15c8f694e5552c14465972c00bf#file-format).**
+
 Some of the properties and values above are ambiguous. To this end, they are documented in more detail below.
 
 **NOTE: Please read the caveats below if you are handling with the JSON directly. You may get very confused otherwise.**
@@ -145,7 +147,7 @@ Some of the properties and values above are ambiguous. To this end, they are doc
  - `timestamp`: An ISO timestamp representing the time data was recorded
  - `timestamps`: The raw data actually has 2 timestamps, not 1 - but 1 of them is sometimes invalid. This array of strings contains both formatted as ISO timestamps.
  - `size_full`: This is the width / height of the _full_ area represented by the binary file from which this this slice was extracted.
- - `size_extract`: The width / height of the area that was extracted. Should match the `data` array-of-array's dimensions **after a 90° transpose anti-clockwise** (see the caveats below).
+ - `size`: The width / height of the area that was extracted. Should match the `data` array-of-array's dimensions **after a 90° transpose anti-clockwise** (see the caveats below).
  - `bounds_full`: The bounding points of the entire content of the binary file from which this slice was extracted, on the OS national grid (northing / easting).
      - `top_left`: The top-left / north-west point
      - `top_right`: The top-right / north-east point
@@ -160,12 +162,14 @@ Some of the properties and values above are ambiguous. To this end, they are doc
      - `bottom_right`: The bottom-right / south-east point (latitude / longitude)
      - `top_left_os`: The top-left / north-west point (OS national grid)
      - `bottom_right_os`: The bottom-right / south-east point (OS national grid)
- - `bounds_extract_array`: The binary data is first converted to 1 big array of arrays beforee the slice is extracted. This contains debugging information about where the slice that was extract was in the source data.
-     - `start`: The x/y indexes top-left corner of the data extracted in the source data
-     - `end`: The x/y indexes of the bottom-right corner of the data extracted in the source data
  - `count_total`: The total number of individual data points in the source array of arrays
- - `count_extract`: The total number of individual data points in the extract array of arrays.
+ - `count`: The total number of individual data points in the extract array of arrays.
 
+
+**The following properties are not available if you do not specify a area to extract:**
+
+ - `bounds_extract`
+ - `bounds_full`: Available, but looks different
 
 ### Caveats
 The format of the data should be fairly easy to handle, but it's very important to note some caveats that will leave you very confused if you don't read this section.

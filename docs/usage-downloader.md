@@ -55,6 +55,8 @@ password = "YOUR_CEDA_PASSWORD_HERE"
 
 This file should be saved with the file extension `.toml`, and shouldn't contain spaces. For example, you could save it with the name `settings.custom.toml`.
 
+Remove everything from `[parsing]` and below fi you do not want any area extraction to take place.
+
 It's very important to note that the nimrod rainfall radar data is on the **ordnance survey national grid**. The latitude / longitude points above are **converted to the OS national grid**, and the **final output data of the program is also on the OS national grid**, as the projections are different, making conversion extremely difficult.
 
 
