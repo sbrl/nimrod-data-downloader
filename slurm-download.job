@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH -J nimrodDL
 #SBATCH -N 1
-#SBATCH -n 52
+#SBATCH -n 55
 #SBATCH -o %j.%N.%a.nimrod-download.out.log
 #SBATCH -e %j.%N.%a.nimrod-download.err.log
 #SBATCH -p ecompute
@@ -40,5 +40,5 @@ export PATH=$HOME/software/bin:$PATH;
 echo ">>> Installing dependencies";
 npm install;
 echo ">>> Downloading data";
-/usr/bin/env time -v src/index.mjs download --verbose --config "${CONFIG}" --output "${OUTPUT}";
+/usr/bin/env time -v src/index.mjs download --log-level INFO --verbose --config "${CONFIG}" --output "${OUTPUT}";
 echo ">>> exited with code $?";
