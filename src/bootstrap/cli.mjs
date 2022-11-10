@@ -8,7 +8,7 @@ import TOML from '@iarna/toml';
 import CliParser from 'applause-cli';
 
 import a from '../helpers/Ansi.mjs';
-import l from '../helpers/Log.mjs';
+import { log as l, LOG_LEVELS } from '../helpers/Log.mjs';
 import { settings, load_config } from './settings.mjs';
 
 
@@ -56,6 +56,7 @@ async function get_actions_metadata() {
 export default async function() {
 	let cli = new CliParser(path.resolve(__dirname, "../../package.json"));
 	cli.argument("verbose", "Enable verbose mode.", false, "boolean");
+	cli.argument("log-level", "Sets the log level. Value values: DEBUG, INFO (the default), LOG, WARN, ERROR, NONE", "INFO", "string");
 	cli.argument("config", "Path to the config file to use (default: settings.custom.toml in the current directory)", "./settings.custom.toml", "string");
 	
 	cli.argument("bounds-topleft",
@@ -66,6 +67,7 @@ export default async function() {
 		"(download, extract-area) The bottom-right corner of the bounding box to extract in the form 'latitude,longitude'",
 		[null, null], (value) => value.split(",").map(parseFloat)
 	);
+	
 	
 	// Disable ansi escape codes if requested
 	if(!settings.output.ansi_colour) {
@@ -88,7 +90,7 @@ export default async function() {
 				argument.description,
 				argument.default_value,
 				argument.type
-			);
+				);
 		}
 	}
 	
@@ -98,6 +100,7 @@ export default async function() {
 	if(settings.cli.verbose) {
 		l.debug(`Activating verbose mode`);
 	}
+	l.level = LOG_LEVELS[settings.cli.log_level];
 	
 	load_config(settings.cli.config);
 	

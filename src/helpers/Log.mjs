@@ -76,7 +76,8 @@ class Log {
 	}
 }
 
+const instance = new Log();
 // You won't normally need these
-export { LOG_LEVELS };
+export { LOG_LEVELS, instance as log };
 
-export default new Log();
+export default instance;
