@@ -58,6 +58,7 @@ class DownloadManager extends EventEmitter {
 	
 	async setup_ftp_client() {
 		// 1: Initialise FTP client
+		// FUTURE: If this keeps crashing, we may be forced to push this to a child process we interact with via IPC - then we can restart it if it crashes
 		this.ftp = new FtpClientManager();
 		this.ftp.client.on("error", (error) => {
 			this.emit("error", error);
