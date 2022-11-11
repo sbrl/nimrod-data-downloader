@@ -97,10 +97,10 @@ export default async function() {
 	// 2: CLI Argument Parsing
 	
 	settings.cli = cli.parse(process.argv.slice(2));
+	l.level = LOG_LEVELS[settings.cli.log_level.toUpperCase()];
 	if(settings.cli.verbose) {
 		l.debug(`Activating verbose mode`);
 	}
-	l.level = LOG_LEVELS[settings.cli.log_level];
 	
 	load_config(settings.cli.config);
 	
