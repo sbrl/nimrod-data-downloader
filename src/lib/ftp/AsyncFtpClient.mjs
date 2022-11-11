@@ -65,6 +65,7 @@ class AsyncFtpClient extends FtpClient {
 			});
 			
 			this.end();
+			this.destroy();
 		});
 	}
 }

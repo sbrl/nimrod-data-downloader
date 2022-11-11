@@ -12,6 +12,7 @@ import pretty_ms from 'pretty-ms';
 import settings from '../../bootstrap/settings.mjs';
 import AsyncFtpClient from './AsyncFtpClient.mjs';
 import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
+import sleep_async from '../async/Sleep.mjs';
 
 class FtpClientManager {
 	constructor() {
@@ -85,6 +86,7 @@ class FtpClientManager {
 		// Try to end the connection gracefully, but if it doesn't close after 10s then it's ended forcefully instead
 		await this.client.endAsync();
 		l.info(`[FtpClientManager/force_reconnect] Destroyed old connection`);
+		await sleep_async(30*1000);
 		this.client = new AsyncFtpClient();
 		l.info(`[FtpClientManager/force_reconnect] Created new connection`);
 		await this.do_connect();
