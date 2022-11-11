@@ -24,7 +24,7 @@ retries = 3
 # Delay retries by this many milliseconds
 retry_delay = 2500
 # Max amount of time (in seconds) to wait for a file to download before timing out and retrying
-download_timeout = 30
+download_timeout = 120
 
 # Files to skip and ignore.
 blacklist = [
