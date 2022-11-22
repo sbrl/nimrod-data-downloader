@@ -31,11 +31,14 @@ class DownloadManager extends EventEmitter {
 		this.pool_max_queue_size = Math.floor(os.cpus().length * 1.4);
 		
 		/**
-		 * The 
+		 * The queue of tar files being parsed, or waiting to be parsed, as PromiseWrapper instances.
 		 * @type {Array}
 		 */
 		this.queue_tar = [];
-		
+		/**
+		 * The ids of files that already appear to exist on disk.
+		 * @var {string[]}
+		 */
 		this.fileids_existing = [];
 	}
 	
