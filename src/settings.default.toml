@@ -4,7 +4,7 @@ output = "CHANGE_ME"
 # Whether to resume downloading from where a previous iteration left off.
 # This is done by counting the number of files in the results directory,
 # and skipping that number of files when scanning the remote server
-# (since the iterating the remote ftp server is deterministic)
+# (since iterating the remote ftp server is deterministic)
 resume = true
 
 [ftp]
