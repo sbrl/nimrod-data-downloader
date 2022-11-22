@@ -38,9 +38,9 @@ class FtpClientManager {
 	 * @param	{string}	ftp_url		The URL of the FTP server. Note that it MUST include the port number.
 	 * @param	{string}	user		The username to login with.
 	 * @param	{string}	password	The password to login with.
-	 * @return	{Promise}	A Promimse that resolves once the connection has been established.
+	 * @return	{Promise}	A Promise that resolves once the connection has been established.
 	 */
-	async connect(ftp_url, user, password) {
+	async connect({ ftp_url, user, password }) {
 		let url_parsed = url.parse(ftp_url);
 		console.log(`[AsyncFtpClient] host`, url_parsed.hostname, `port`, parseInt(url_parsed.port, 10));
 		this.connect_obj = {
@@ -94,20 +94,30 @@ class FtpClientManager {
 	
 	async list(filepath) {
 		return await p_retry(async () => {
-				return await p_timeout(
-					this.client.listAsync(filepath),
-					{ milliseconds: settings.config.ftp.download_timeout * 1000 }
+			return await p_timeout(
+				this.client.listAsync(filepath),
+				{ milliseconds: settings.config.ftp.download_timeout * 1000 }
+			);
+		}, {
+			retries: settings.config.ftp.retries,
+			onFailedAttempt: async () => {
+				this.force_reconnect();
+				await make_on_failure_handler(
+					`[FilenameIterator/list_years]`,
+					settings.config.ftp.retry_delay
 				);
-			}, {
-				retries: settings.config.ftp.retries,
-				onFailedAttempt: async () => {
-					this.force_reconnect();
-					await make_on_failure_handler(
-						`[FilenameIterator/list_years]`,
-						settings.config.ftp.retry_delay
-					);
-				}
-			});
+			}
+		});
+	}
+	
+	async download(filepath_remote, filepath_local) {
+		let stream_download = await this.client.getAsync(filepath_remote);
+		let stream_write = fs.createWriteStream(filepath_local);
+		
+		await this.pipeline(
+			stream_download,
+			stream_write
+		);
 	}
 	
 	// We can't wrap getAsync in the way we did above, because crashes may occur part-way through reading from the stream.

@@ -40,13 +40,8 @@ class ParallelDownloader {
 			throw new Error("Error: The target directory does not exist.");
 		
 		// l.info(`[ParallelDownloader] Beginning download of ${a.fgreen}${source}${a.reset} to ${a.fgreen}${target}${a.reset}`);
-		let stream_download = await this.ftp.client.getAsync(source);
-		let stream_write = fs.createWriteStream(target);
+		await this.ftp.download(source, target);
 		
-		await this.pipeline(
-			stream_download,
-			stream_write
-		);
 		// l.info(`[ParallelDownloader] Saved ${a.fgreen}${source}${a.reset} to ${a.fgreen}${target}${a.reset}`)
 		l.info(`${a.fmagenta}[ParallelDownloader]${a.reset} Downloaded ${a.fmagenta}${a.hicol}${path.basename(source)}${a.reset}`)
 	}

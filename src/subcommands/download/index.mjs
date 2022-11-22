@@ -61,10 +61,6 @@ export default async function() {
 		l.error(`Error: No output directory was specified in the config file.`);
 		process.exit(1);
 	}
-	if(!fs.existsSync(settings.config.output)) {
-		l.error(`Error: The output directory '${settings.config.output}' doesn't exist.`);
-		process.exit(3);
-	}
 	if(typeof settings.config.ftp.url != "string" || settings.config.ftp.url == "CHANGE_ME") {
 		l.error(`Error: No ftp url was specified in the config file.`);
 		process.exit(1);

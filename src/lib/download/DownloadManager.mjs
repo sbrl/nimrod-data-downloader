@@ -20,6 +20,7 @@ import { ErrorWrapper } from '../Errors.mjs';
 
 import FilenameIterator from '../ftp/FilenameIterator.mjs';
 import ParallelDownloader from '../ftp/ParallelDownloader.mjs';
+import FtpChildProcessClient from '../ftp/FtpChildProcessClient.mjs';
 
 // Hack 'cause __dirname isn't defined when we're using ES6 modules for some crazy reason 
 const __dirname = import.meta.url.slice(7, import.meta.url.lastIndexOf("/"));
@@ -62,11 +63,7 @@ class DownloadManager extends EventEmitter {
 	async setup_ftp_client() {
 		// 1: Initialise FTP client
 		// FUTURE: If this keeps crashing, we may be forced to push this to a child process we interact with via IPC - then we can restart it if it crashes
-		this.ftp = new FtpClientManager();
-		this.ftp.client.on("error", (error) => {
-			this.emit("error", error);
-			throw error;
-		});
+		this.ftp = new FtpChildProcessClient();
 		
 		l.log(`Connecting to ${a.fgreen}${settings.config.ftp.url}${a.reset}...`);
 		await this.ftp.connect(
@@ -138,6 +135,8 @@ class DownloadManager extends EventEmitter {
 	}
 	
 	async run() {
+		if(fs.existsSync(settings.config.output))
+			await fs.promises.mkdir(settings.config.output);
 		await fs.promises.copyFile(
 			path.join(__dirname, "postprocess.sh"),
 			path.join(settings.config.output, "postprocess.sh")
