@@ -3,7 +3,7 @@
 import path from 'path';
 
 import a from '../../helpers/Ansi.mjs';
-import l from '../../helpers/Log.mjs';
+import log from '../../helpers/NamespacedLog.mjs'; const l = log("parent:filenameiterator");
 
 
 class FilenameIterator {
@@ -31,11 +31,11 @@ class FilenameIterator {
 			.filter((obj) => obj.type == "d")
 			.map((obj) => obj.name);
 		
-		l.log(`[FilenameIterator] Found years on server: ${year_dirs.join(", ")}`);
+		l.log(`Found years on server: ${year_dirs.join(", ")}`);
 		for(let year_str of year_dirs) {
 			let year = parseInt(year_str, 10);
 			if(year <= 2005) {
-				l.warn(`[FilenameIterator] Skipping year ${year} because of format problems`);
+				l.warn(`Skipping year ${year} because of format problems`);
 				continue;
 			}
 			
@@ -50,18 +50,18 @@ class FilenameIterator {
 			for(let filename_obj of files) {
 				let filename = filename_obj.name;
 				if(this.is_blacklisted(filename)) {
-					l.log(`[FilenameIterator] Skipping blacklisted filename ${a.hicol}${filename}${a.reset}`);
+					l.log(`Skipping blacklisted filename ${a.hicol}${filename}${a.reset}`);
 					continue;
 				}
 				
 				let filename_date = filename.match(/[0-9]+/)[0];
 				if(typeof filename_date != "string") {
-					l.warn(`[FilenameIterator] Warning: Failed to extract date for filename '${filename}', skipping`);
+					l.warn(`Warning: Failed to extract date for filename '${filename}', skipping`);
 					continue;
 				}
 				
 				if(skip_list.includes(filename_date)) {
-					l.log(`[DownloadManager] Filename with date ${filename_date} has been done already, skipping`);
+					l.log(`Filename with date ${filename_date} has been done already, skipping`);
 					continue;
 				}
 				

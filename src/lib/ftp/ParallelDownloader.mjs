@@ -1,7 +1,5 @@
 "use strict";
 
-import { pipeline } from 'stream';
-import { promisify } from 'util'
 import path from 'path';
 import fs from 'fs';
 
@@ -9,7 +7,7 @@ import p_retry from 'p-retry';
 import p_timeout from 'p-timeout';
 
 import a from '../../helpers/Ansi.mjs';
-import l from '../../helpers/Log.mjs';
+import log from '../../helpers/NamespacedLog.mjs'; const l = log("parent:paralleldownloader");
 import settings from '../../bootstrap/settings.mjs';
 import PromiseWrapper from '../async/PromiseWrapper.mjs';
 import { ErrorWrapper } from '../Errors.mjs';
@@ -23,7 +21,6 @@ class ParallelDownloader {
 	constructor(in_ftp) {
 		this.ftp = in_ftp;
 		
-		this.pipeline = promisify(pipeline);
 	}
 	
 	/**
@@ -43,7 +40,7 @@ class ParallelDownloader {
 		await this.ftp.download(source, target);
 		
 		// l.info(`[ParallelDownloader] Saved ${a.fgreen}${source}${a.reset} to ${a.fgreen}${target}${a.reset}`)
-		l.info(`${a.fmagenta}[ParallelDownloader]${a.reset} Downloaded ${a.fmagenta}${a.hicol}${path.basename(source)}${a.reset}`)
+		l.info(`Downloaded ${a.fmagenta}${a.hicol}${path.basename(source)}${a.reset}`)
 	}
 	
 	/**
@@ -62,7 +59,7 @@ class ParallelDownloader {
 		if(!fs.existsSync(target_dir))
 			throw new Error(`Error: The target directory '${target_dir}' does not exist.`);
 		
-		l.log(`[ParallelDownloader] Starting, downloading ${a.fyellow}${settings.config.ftp.parallel}${a.reset} files in parallel`);
+		l.log(`Starting, downloading ${a.fyellow}${settings.config.ftp.parallel}${a.reset} files in parallel`);
 		
 		let wrappers = [],
 			promises = [];

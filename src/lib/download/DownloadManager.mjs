@@ -12,7 +12,7 @@ import rmrf from 'rm-rf-async';
 
 import settings from '../../bootstrap/settings.mjs';
 import a from '../../helpers/Ansi.mjs';
-import l from '../../helpers/Log.mjs';
+import log from '../../helpers/NamespacedLog.mjs'; const l = log("parent:downloadmanager");
 
 import FtpClientManager from '../ftp/FtpClientManager.mjs';
 import PromiseWrapper from '../async/PromiseWrapper.mjs';
@@ -135,7 +135,7 @@ class DownloadManager extends EventEmitter {
 	}
 	
 	async run() {
-		if(fs.existsSync(settings.config.output))
+		if(!fs.existsSync(settings.config.output))
 			await fs.promises.mkdir(settings.config.output);
 		await fs.promises.copyFile(
 			path.join(__dirname, "postprocess.sh"),
@@ -177,9 +177,9 @@ class DownloadManager extends EventEmitter {
 		}
 		
 		if(this.queue_tar.length > 0) {
-			l.log(`[DownloadManager] Waiting for all jobs to finish....`);
+			l.log(`Waiting for all jobs to finish....`);
 			await Promise.all(this.queue_tar.map((wrapper) => wrapper._promise));
-			l.log(`[DownloadManager] All jobs finished: thank you :D`);
+			l.log(`All jobs finished: thank you :D`);
 		}
 		
 		await this.ftp.disconnect();
@@ -215,18 +215,18 @@ class DownloadManager extends EventEmitter {
 			await once(this, "tar_finish");
 		
 		let stats = this.pool.stats();
-		l.log(`[workerpool] Queuing ${a.fblue}${a.hicol}${path.basename(filepath)}${a.reset} (current status: ${stats.pendingTasks} tasks pending; ${this.pool_max_queue_size} max pending allowed; ${stats.busyWorkers}/${stats.totalWorkers} workers busy)`);
+		l.log(`Queuing ${a.fblue}${a.hicol}${path.basename(filepath)}${a.reset} (current status: ${stats.pendingTasks} tasks pending; ${this.pool_max_queue_size} max pending allowed; ${stats.busyWorkers}/${stats.totalWorkers} workers busy)`);
 		
 		// Create the wrapper
 		let wrapper = new PromiseWrapper(async () => {
 			let result = await this.pool_proxy.parse_tar(filepath, target, bounds, tmpdir);
 			let filepath_basename = path.basename(filepath);
 			if(result.status == "error") {
-				l.error(`[workerpool] Worker threw error for ${filepath_basename}:`);
+				l.error(`Worker threw error for ${filepath_basename}:`);
 				l.error(result.error);
 			}
 			else
-				l.log(`${a.fgreen}[workerpool]${a.reset} Parsed ${a.fgreen}${a.hicol}${filepath_basename}${a.reset} in ${pretty_ms(result.time_taken)}`);
+				l.log(`Parsed ${a.fgreen}${a.hicol}${filepath_basename}${a.reset} in ${pretty_ms(result.time_taken)}`);
 			
 			// Once complete, check the queue to get it to emit the tar_finish event
 			this.queue_tar_check();
@@ -239,7 +239,7 @@ class DownloadManager extends EventEmitter {
 			try {
 				await wrapper.run();
 			} catch(error) {
-				l.error(`[DownloadManager] Caught error from PromiseWrapper: `, error);
+				l.error(`Caught error from PromiseWrapper: `, error);
 				// Check the queue to handle any errors
 				this.queue_tar_check();
 			}

@@ -1,23 +1,52 @@
 "use strict";
 
 import url from 'url';
+import fs from 'fs';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
 
 import p_retry from 'p-retry';
 import p_timeout from 'p-timeout';
 
-import l from '../../helpers/Log.mjs';
+import log from '../../helpers/NamespacedLog.mjs'; const l = log("ftp:child");
 import a from '../../helpers/Ansi.mjs';
 import pretty_ms from 'pretty-ms';
 
-import settings from '../../bootstrap/settings.mjs';
 import AsyncFtpClient from './AsyncFtpClient.mjs';
 import make_on_failure_handler from '../async/RetryFailureHandler.mjs';
 import sleep_async from '../async/Sleep.mjs';
 
+
+const pipeline_async = promisify(pipeline);
+
+
+/**
+ * Manages an async FTP client.
+ * @param	{number}	ftp_retries			Retry downloading a file up to this many times if it fails
+ * @param	{number}	retry_delay			Delay subsequent retries by this many seconds
+ * @param	{number}	download_timeout	Allow downloads to take at most this many seconds
+ * @returns	{FtpClientManager}	A new FtpClientManager instance.
+ */
 class FtpClientManager {
-	constructor() {
+	constructor(ftp_retries=3, retry_delay=2.5, download_timeout=120) {
 		this.client = null;
 		this.connect_obj = null;
+		
+		/**
+		 * Retry downloading a file up to this many times if it fails
+		 * @var {number}
+		 */
+		this.ftp_retries = ftp_retries;
+		/**
+		 * Delay subsequent retries by this many milliseconds
+		 * @var {number}
+		 */
+		this.retry_delay = retry_delay * 1000;
+		/**
+		 * Allow downloads to take at most this long, in seconds
+		 * @var {number}
+		 */
+		this.download_timeout = download_timeout;
 		
 		this.reconnect_grace_period = 60 * 1000; // Don't reconnect more than once every minute
 		
@@ -28,7 +57,7 @@ class FtpClientManager {
 		this.last_reconnect = +new Date();
 		this.client = new AsyncFtpClient();
 		this.client.on("error", (error) => {
-			l.error(`[FtpClientManager] Caught error from client, force-reconnecting:`, error);
+			l.error(`Caught error from client, force-reconnecting:`, error);
 			this.force_reconnect();
 		})
 	}
@@ -42,7 +71,7 @@ class FtpClientManager {
 	 */
 	async connect({ ftp_url, user, password }) {
 		let url_parsed = url.parse(ftp_url);
-		console.log(`[AsyncFtpClient] host`, url_parsed.hostname, `port`, parseInt(url_parsed.port, 10));
+		l.info(`host`, url_parsed.hostname, `port`, parseInt(url_parsed.port, 10));
 		this.connect_obj = {
 			host: url_parsed.hostname,
 			port: parseInt(url_parsed.port, 10),
@@ -64,7 +93,7 @@ class FtpClientManager {
 			throw new Error("Error: Can't reconnect when we haven't connected in the first place.");
 		
 		await this.client.connectAsync(this.connect_obj);
-		l.log(`[FtpClientManager/do_connect] Connected to ${a.fgreen}${this.connect_obj.host}:${this.connect_obj.port} successfully`);
+		l.log(`Connected to ${a.fgreen}${this.connect_obj.host}:${this.connect_obj.port} successfully`);
 	}
 	
 	/**
@@ -72,23 +101,23 @@ class FtpClientManager {
 	 * @return	{Promise}	A Promise that resolves once the connection has been closed.
 	 */
 	async disconnect() {
-		l.log(`[FtpClientManager] Disconnecting from remote server`);
+		l.log(`Disconnecting from remote server`);
 		await this.client.endAsync();
-		l.log(`[FtpClientManager] Disconnect operation successful`);
+		l.log(`Disconnect operation successful`);
 	}
 	
 	async force_reconnect(force = false) {
 		let time_since_last = new Date() - this.last_reconnect;
 		if(!force && time_since_last < this.reconnect_grace_period) {
-			l.warn(`[FtpClientManager] Forceful reconnect requested, but the last one was ${pretty_ms(time_since_last)} ago (grace period of ${pretty_ms(this.reconnect_grace_period)}) - refusing to reconnect again until the grace period expires`);
+			l.warn(`force_reconnect: Forceful reconnect requested, but the last one was ${pretty_ms(time_since_last)} ago (grace period of ${pretty_ms(this.reconnect_grace_period)}) - refusing to reconnect again until the grace period expires`);
 		}
-		l.warn(`[FtpClientManager] Commencing forceful reconnect (last reconnect was ${pretty_ms(time_since_last)} ago).`);
+		l.warn(`force_reconnect: Commencing forceful reconnect (last reconnect was ${pretty_ms(time_since_last)} ago).`);
 		// Try to end the connection gracefully, but if it doesn't close after 10s then it's ended forcefully instead
 		await this.client.endAsync();
-		l.info(`[FtpClientManager/force_reconnect] Destroyed old connection`);
+		l.info(`force_reconnect: Destroyed old connection`);
 		await sleep_async(30*1000);
 		this.client = new AsyncFtpClient();
-		l.info(`[FtpClientManager/force_reconnect] Created new connection`);
+		l.info(`force_reconnect: Created new connection`);
 		await this.do_connect();
 	}
 	
@@ -96,15 +125,15 @@ class FtpClientManager {
 		return await p_retry(async () => {
 			return await p_timeout(
 				this.client.listAsync(filepath),
-				{ milliseconds: settings.config.ftp.download_timeout * 1000 }
+				{ milliseconds: this.download_timeout * 1000 }
 			);
 		}, {
-			retries: settings.config.ftp.retries,
+			retries: this.ftp_retries,
 			onFailedAttempt: async () => {
 				this.force_reconnect();
 				await make_on_failure_handler(
 					`[FilenameIterator/list_years]`,
-					settings.config.ftp.retry_delay
+					this.retry_delay
 				);
 			}
 		});
@@ -114,7 +143,7 @@ class FtpClientManager {
 		let stream_download = await this.client.getAsync(filepath_remote);
 		let stream_write = fs.createWriteStream(filepath_local);
 		
-		await this.pipeline(
+		await pipeline_async(
 			stream_download,
 			stream_write
 		);

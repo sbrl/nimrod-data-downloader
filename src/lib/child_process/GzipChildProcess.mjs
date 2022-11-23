@@ -4,11 +4,10 @@ import EventEmitter from 'events';
 import child_process from 'child_process';
 
 import { end_safe } from '../io/StreamHelpers.mjs';
-import  l from '../../helpers/Log.mjs';
+import log from '../../helpers/NamespacedLog.mjs'; const l = log("gzipchildprocess");
 
 /**
  * Spawns and manages a gzip child process.
- * @deprecated Use spawn-stream instead
  * @extends EventEmitter
  */
 class GzipChildProcess extends EventEmitter {
@@ -19,7 +18,7 @@ class GzipChildProcess extends EventEmitter {
 	constructor(auto_start = true) {
 		super();
 		
-		this.debug = true;
+		this.debug = false;
 		this.child_process = null;
 		
 		this.has_ended = false;
@@ -39,7 +38,7 @@ class GzipChildProcess extends EventEmitter {
 			}
 		);
 		this.child_process.on("close", () => {
-			if(this.debug) l.debug("[GzipChildProcess] Close event triggered");
+			if(this.debug) l.debug("Close event triggered");
 			this.has_ended = true;
 			this.emit("close");
 		});
@@ -56,23 +55,23 @@ class GzipChildProcess extends EventEmitter {
 	 * @return	{Promise}
 	 */
 	async end_gracefully() {
-		if(this.debug) l.debug("[GzipChildProcess] end_gracefully called");
+		if(this.debug) l.debug("end_gracefully called");
 		if(this.has_ended) {
-			if(this.debug) l.debug("[GzipChildProcess] It's been ended already - nothing to do");
+			if(this.debug) l.debug("It's been ended already - nothing to do");
 			return;
 		}
 		if(!this.stdin.writableFinished) {
-			if(this.debug) l.debug("[GzipChildProcess] Closing stdin");
+			if(this.debug) l.debug("Closing stdin");
 			await end_safe(this.stdin);
-			if(this.debug) l.debug("[GzipChildProcess] stdin closed successfully");
+			if(this.debug) l.debug("stdin closed successfully");
 		}
 		if(this.has_ended) {
-			if(this.debug) l.debug("[GzipChildProcess] It's been ended already - nothing to do");
+			if(this.debug) l.debug("It's been ended already - nothing to do");
 			return;
 		}
-		if(this.debug) l.debug("[GzipChildProcess] Waiting for close event");
+		if(this.debug) l.debug("Waiting for close event");
 		await EventEmitter.once(this, "close");
-		if(this.debug) l.debug("[GzipChildProcess] Close event fired, our work is done");
+		if(this.debug) l.debug("Close event fired, our work is done");
 	}
 }
 
