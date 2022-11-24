@@ -5,7 +5,8 @@ import { fork } from 'child_process';
 import { once, EventEmitter } from 'events';
 
 import a from '../../helpers/Ansi.mjs';
-import log from '../../helpers/NamespacedLog.mjs'; const l = log("ftp:parent");
+import log from '../../helpers/NamespacedLog.mjs';import sleep_async from '../async/Sleep.mjs';
+ const l = log("ftp:parent");
 
 const __dirname = import.meta.url.slice(7, import.meta.url.lastIndexOf("/"));
 
@@ -26,6 +27,7 @@ class FtpChildProcessClient extends EventEmitter {
 		
 		this.paused = false;
 		
+		this.reconnect_delay = 30 * 1000;
 	}
 	
 	#make_child() {
@@ -143,6 +145,20 @@ class FtpChildProcessClient extends EventEmitter {
 		return this.#do_ipc_call("ipc-download", { filepath_remote, filepath_local });
 	}
 	
+	async force_reconnect() {
+		l.info(`force_reconnect: disconnecting [1/4]`)
+		await this.disconnect();
+		
+		l.info(`force_reconnect: creating new child process [2/4]`)
+		this.#make_child();
+		
+		l.info(`force_reconnect: waiting ${this.reconnect_delay}ms reconnect delay [2/4]`)
+		await sleep_async(this.reconnect_delay);
+		
+		l.info(`force_reconnect: connecting new child process [2/4]`);
+		await this.connect();
+		l.info(`force_reconnect: complete`);
+	}
 	
 	disconnect() {
 		return new Promise((resolve, _reject) => {
@@ -157,6 +173,7 @@ class FtpChildProcessClient extends EventEmitter {
 			const do_kill = () => {
 				if(is_done) return;
 				this.child_abort.abort();
+				this.child = null;
 				is_done = true;
 				resolve();
 			}
