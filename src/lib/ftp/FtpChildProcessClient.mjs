@@ -111,7 +111,7 @@ class FtpChildProcessClient extends EventEmitter {
 		while(true) {
 			const req_id = this.#next_req_id++;
 			const abort = new AbortController();
-			const did_crash = false;
+			let did_crash = false;
 			const handle_crash = () => {
 				did_crash = true;
 				abort.abort();
@@ -122,7 +122,14 @@ class FtpChildProcessClient extends EventEmitter {
 				args
 			});
 			this.child.on("error", handle_crash);
-			const result = await this.#wait_for_req_id(event_name, req_id, abort.signal);
+			let result;
+			try {
+				result = await this.#wait_for_req_id(event_name, req_id, abort.signal);
+			}
+			catch(error) {
+				l.warn(`do_ipc_call: Caught error:`, error);
+				did_crash = true;
+			}
 			this.child.off("error", handle_crash);
 			if(did_crash) {
 				if(this.paused) await once(this, "resume");
