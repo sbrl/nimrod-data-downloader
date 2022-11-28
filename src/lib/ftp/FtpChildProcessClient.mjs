@@ -26,6 +26,7 @@ class FtpChildProcessClient extends EventEmitter {
 		this.#make_child();
 		
 		this.paused = false;
+		this.doing_reconnect = false;
 		
 		this.reconnect_delay = 30 * 1000;
 	}
@@ -153,6 +154,12 @@ class FtpChildProcessClient extends EventEmitter {
 	}
 	
 	async force_reconnect() {
+		if(!this.doing_reconnect) {
+			l.info(`force_reconnect: reconnect requested, but one is already in progress`);
+			return;
+		}
+		this.doing_reconnect = true;
+		
 		l.info(`force_reconnect: disconnecting [1/4]`)
 		await this.disconnect();
 		
@@ -165,6 +172,8 @@ class FtpChildProcessClient extends EventEmitter {
 		l.info(`force_reconnect: connecting new child process [2/4]`);
 		await this.connect();
 		l.info(`force_reconnect: complete`);
+		
+		this.doing_reconnect = false;
 	}
 	
 	disconnect() {
