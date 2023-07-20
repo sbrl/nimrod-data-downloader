@@ -2,7 +2,7 @@
 
 > Data downloader for the 1km NIMROD rainfall radar data
 
-This package downloads **1km** NIMROD rainfall radar data (5km has not been tested), extracting the data within the given bounding box. It does so in a parallel fashion - it can take advantage of as many cores as your machine has.
+This package downloads [**1km** NIMROD rainfall radar data](https://catalogue.ceda.ac.uk/uuid/27dd6ffba67f667a18c62de5c3456350) (5km has not been tested), extracting the data within the given bounding box. It does so in a parallel fashion - it can take advantage of as many cores as your machine has.
 
 I implemented this as part of my PhD.
 
